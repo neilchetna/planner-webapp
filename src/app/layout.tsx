@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
+import { ClerkProvider } from "@clerk/nextjs";
+import { AppProps } from "next/app";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,13 +15,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  pageProps,
+}: AppProps & { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Theme>{children}</Theme>
+        <Theme>
+          <ClerkProvider {...pageProps}>{children}</ClerkProvider>
+        </Theme>
       </body>
     </html>
   );
