@@ -1,0 +1,21 @@
+.ghost-input {
+  --text-field-border-width: 0px;
+  --text-field-focus-color: none;
+  --text-field-padding: none;
+}
+
+.ghost-input:focus-visible {
+  outline: none;
+
+  input {
+    outline: none;
+  }
+}
+
+.ghost-input:focus-within {
+  outline: none;
+
+  input {
+    outline: none;
+  }
+}
