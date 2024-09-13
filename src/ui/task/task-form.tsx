@@ -1,12 +1,12 @@
 import { Task } from "@/models/task";
-import { Button, Checkbox, Flex, Text, TextArea } from "@radix-ui/themes";
-import GhostInput from "../ghost-input/ghost-input";
+import { Button, Checkbox, Flex, Text } from "@radix-ui/themes";
 import {
   IconHash,
   IconHourglassLow,
   IconListCheck,
   IconTargetArrow,
 } from "@tabler/icons-react";
+import GhostInput from "../ghost-input/ghost-input";
 
 type TaskFormProps = {
   task: Task;

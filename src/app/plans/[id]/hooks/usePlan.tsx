@@ -22,13 +22,13 @@ function usePlan({ id }: UsePlanProps): UsePlan {
   const planApi = apiFactory();
 
   useEffect(() => {
-    getPlan();
-  }, []);
+    async function getPlan() {
+      const planData = await planApi.getPlan(id);
+      setPlan(planData);
+    }
 
-  async function getPlan() {
-    const planData = await planApi.getPlan(id);
-    setPlan(planData);
-  }
+    getPlan();
+  }, [id, planApi]);
 
   function selectTask(task: Task) {
     setSelectedTaskId(task.id);
