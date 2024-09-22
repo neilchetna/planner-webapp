@@ -37,10 +37,13 @@ jobs:
           npm install @types/eslint__js@8.42.3
           npm install typescript-eslint@8.2.0
           npm install @typescript-eslint/eslint-plugin@latest
+          npm install @next/eslint-plugin-next
+        working-directory: "./webapp"
 
       - name: Run ESLint
         run: npm run lint:ci
         continue-on-error: false
+        working-directory: "./webapp"
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
