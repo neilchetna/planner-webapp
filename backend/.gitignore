@@ -1,2 +1,5 @@
 # TMP files
 /tmp/
+
+# Enviornment Variables
+.env

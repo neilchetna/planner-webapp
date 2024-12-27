@@ -7,6 +7,9 @@ start-db:
 start-go:
 	cd backend && air | sed 's/^/[GO] /'
 
+migrations:
+	cd backend && go run migrations/main.go
+
 # [WEBAPP]
 start-next:
 	cd webapp && npm run dev 2>&1 | sed 's/^/[NEXT] /'
