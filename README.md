@@ -7,7 +7,7 @@ It literally stands for **Do More Sh\*t**, this app is a productivity tool made 
 ### Prerequisites
 
 - Ensure you have Node.js and npm installed. You can download them from [Node.js official website](https://nodejs.org/).
-- Additionally install [pnpm](https://pnpm.io/) for installing frontend
+- Additionally install [pnpm](https://pnpm.io/). Package Manager of choice for installing frontend deps.
 - Ensure you have Go installed. You can download it from [Go official website](https://golang.org/).
 - Ensure you also have [docker-desktop](https://www.docker.com/products/docker-desktop/) to run a database instance.
 - To run the dev environment using makefile you will also need [GNU Make](https://www.gnu.org/software/make/). If you don't have it you can manually run commands from the makefile
