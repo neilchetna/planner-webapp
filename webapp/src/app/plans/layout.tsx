@@ -10,12 +10,12 @@ type PlansLayoutProps = {
 function PlansLayout({ children }: PlansLayoutProps) {
   return (
     <PanelGroup className="h-full" direction="horizontal">
-      <Panel defaultSize={15} minSize={10} maxSize={20}>
+      <Panel defaultSize={20} minSize={10} maxSize={30}>
         <Sidebar />
       </Panel>
       <PanelResizeHandle />
       <Panel defaultSize={100 - 15} minSize={30}>
-        <div className="bg-slate-50 h-screen">{children}</div>
+        <div className="bg-slate-50 px-4 h-screen">{children}</div>
       </Panel>
     </PanelGroup>
   );

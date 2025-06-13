@@ -19,11 +19,10 @@ function TaskForm({ task }: TaskFormProps) {
         <Checkbox className="self-start mt-2" />
         <div className="w-full">
           <GhostInput
-            autoFocus
             className="text-base font-medium m-0"
             type="text"
             placeholder="New Task"
-            value={task.title}
+            defaultValue={task.title}
           />
           <GhostInput className="text-sm" placeholder="Description" />
         </div>

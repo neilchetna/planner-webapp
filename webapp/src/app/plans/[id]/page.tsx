@@ -3,17 +3,19 @@ import TaskCard from "@/ui/task/task-card";
 import { Box, Button, Container, Heading } from "@radix-ui/themes";
 import usePlan from "./hooks/usePlan";
 import { Task } from "@/models/task";
+import { use } from "react";
+
+type Params = { id: string };
 
 type PlansDetailPageProps = {
-  params: {
-    id: string;
-  };
+  params: Promise<Params>;
 };
 
 function PlansDetailPage({ params }: PlansDetailPageProps) {
+  const paramsPromise = use<Params>(params);
   const { plan, selectedTaskId, editingTaskId, selectTask, setEditingTask } =
     usePlan({
-      id: params.id,
+      id: paramsPromise.id,
     });
 
   function handleTaskClick(task: Task) {
