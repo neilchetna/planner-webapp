@@ -32,12 +32,13 @@ jobs:
 
       - name: Install ESLint
         run: |
-          npm install eslint@8.57.0
+          npm install eslint@9.29.0
           npm install @microsoft/eslint-formatter-sarif@3.1.0
           npm install @types/eslint__js@8.42.3
-          npm install typescript-eslint@8.2.0
+          npm install typescript-eslint@8.34.1
           npm install @typescript-eslint/eslint-plugin@latest
-          npm install @next/eslint-plugin-next
+          npm install @next/eslint-plugin-next@15.3.3
+          npm install eslint-config-next@15.3.3
         working-directory: "./webapp"
 
       - name: Run ESLint
