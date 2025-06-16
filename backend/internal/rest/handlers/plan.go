@@ -2,12 +2,16 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/neilchetna/planner-webapp/backend/internal/constants"
+	"github.com/neilchetna/planner-webapp/backend/internal/rest/utils"
 	"github.com/neilchetna/planner-webapp/backend/models"
+	"gorm.io/gorm"
 )
 
 type PlanService interface {
@@ -27,9 +31,6 @@ type PlanHandler struct {
 	Service PlanService
 }
 
-// TODO: Move into appropriate file and set this default for all items
-const defaultLimit = 10
-
 func NewPlanHandler(g *echo.Group, svc PlanService) {
 	handler := &PlanHandler{Service: svc}
 
@@ -40,7 +41,7 @@ func NewPlanHandler(g *echo.Group, svc PlanService) {
 	g.DELETE("/:id", handler.Delete)
 }
 
-func isRequestValid(m *models.Plan) (bool, error) {
+func validatePlan(m *models.Plan) (bool, error) {
 	validator := validator.New()
 	err := validator.Struct(m)
 
@@ -60,7 +61,7 @@ func (a *PlanHandler) Create(c echo.Context) error {
 	}
 
 	var ok bool
-	if ok, err = isRequestValid(&plan); !ok {
+	if ok, err = validatePlan(&plan); !ok {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
@@ -74,16 +75,11 @@ func (a *PlanHandler) Create(c echo.Context) error {
 }
 
 func (a *PlanHandler) Update(c echo.Context) error {
-	idParam := c.Param("id")
-	id, err := strconv.ParseUint(idParam, 10, 64)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid ID format")
-	}
-
+	planId, _ := utils.ParamUint(c, "id")
 	var plan models.Plan
-	plan.ID = uint(id)
+	plan.ID = planId
 
-	err = c.Bind(&plan)
+	err := c.Bind(&plan)
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
@@ -98,17 +94,16 @@ func (a *PlanHandler) Update(c echo.Context) error {
 }
 
 func (a *PlanHandler) Get(c echo.Context) error {
-	idParam := c.Param("id")
-	id, err := strconv.ParseUint(idParam, 10, 64)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid ID format")
-	}
+	planId, _ := utils.ParamUint(c, "id")
 
 	ctx := c.Request().Context()
 	var plan models.Plan
-	plan, err = a.Service.Get(ctx, uint(id))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+	plan, err := a.Service.Get(ctx, planId)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, "Plan not found")
+	} else if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, plan)
@@ -118,7 +113,7 @@ func (a *PlanHandler) Query(c echo.Context) error {
 	limitParam := c.QueryParam("limit")
 	limit, err := strconv.ParseInt(limitParam, 10, 64)
 	if err != nil {
-		limit = defaultLimit
+		limit = constants.DefaultQueryLimit
 	}
 
 	ctx := c.Request().Context()
@@ -132,14 +127,10 @@ func (a *PlanHandler) Query(c echo.Context) error {
 }
 
 func (a *PlanHandler) Delete(c echo.Context) error {
-	idParam := c.Param("id")
-	id, err := strconv.ParseUint(idParam, 10, 64)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid ID format")
-	}
+	planId, _ := utils.ParamUint(c, "id")
 
 	ctx := c.Request().Context()
-	err = a.Service.Delete(ctx, uint(id))
+	err := a.Service.Delete(ctx, planId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

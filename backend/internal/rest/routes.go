@@ -6,6 +6,7 @@ import (
 	"github.com/neilchetna/planner-webapp/backend/internal/rest/handlers"
 	"github.com/neilchetna/planner-webapp/backend/internal/rest/middleware"
 	"github.com/neilchetna/planner-webapp/backend/services/plan"
+	"github.com/neilchetna/planner-webapp/backend/services/task"
 	"gorm.io/gorm"
 )
 
@@ -20,6 +21,12 @@ func BuildRoutes(e *echo.Echo, db *gorm.DB) {
 	planRepo := sqlRepository.NewPlanRepositoryBuilder(db)
 	planService := plan.PlanServiceBuilder(planRepo)
 	handlers.NewPlanHandler(planGroup, planService)
+
+	// Task
+	taskGroup := e.Group("/plan/:planId/task")
+	taskRepo := sqlRepository.NewTaskRepositoryBuilder(db)
+	taskService := task.TaskServiceBuilder(taskRepo)
+	handlers.NewTaskHandler(taskGroup, taskService)
 
 }
 

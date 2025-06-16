@@ -9,6 +9,6 @@ type Task struct {
 	Title       string       `json:"title" validate:"required"`
 	Description string       `json:"description"`
 	StartedAt   sql.NullTime `json:"startedAt"`
-	DueDate     sql.NullTime `json:"DueDate"`
+	DueDate     sql.NullTime `json:"dueDate"`
 	PlanId      uint         `json:"planId"`
 }

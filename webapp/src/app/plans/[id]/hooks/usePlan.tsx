@@ -28,7 +28,7 @@ function usePlan({ id }: UsePlanProps): UsePlan {
     }
 
     getPlan();
-  }, [id, planApi]);
+  }, [id]);
 
   function selectTask(task: Task) {
     setSelectedTaskId(task.id);
