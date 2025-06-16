@@ -3,6 +3,7 @@ package sqlrepository
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/neilchetna/planner-webapp/backend/models"
 	"gorm.io/gorm"
@@ -17,7 +18,7 @@ func NewPlanRepositoryBuilder(db *gorm.DB) *PlanRepository {
 }
 
 func (m *PlanRepository) Create(ctx context.Context, plan *models.Plan) error {
-	result := m.db.Omit("ID").Create(plan)
+	result := m.db.WithContext(ctx).Omit("ID").Create(plan)
 
 	if result.Error != nil {
 		return result.Error
@@ -27,7 +28,7 @@ func (m *PlanRepository) Create(ctx context.Context, plan *models.Plan) error {
 
 func (m *PlanRepository) Query(ctx context.Context, limit int) ([]models.Plan, error) {
 	var plans []models.Plan
-	result := m.db.Limit(limit).Find(&plans).Preload("Tasks")
+	result := m.db.WithContext(ctx).Preload("Tasks").Limit(limit).Find(&plans)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -49,8 +50,8 @@ func (m *PlanRepository) Update(ctx context.Context, plan *models.Plan) error {
 
 func (m *PlanRepository) Get(ctx context.Context, id uint) (models.Plan, error) {
 	var plan models.Plan
-	result := m.db.First(&plan, "id = ?", id)
-
+	result := m.db.WithContext(ctx).Preload("Tasks").First(&plan, "id = ?", id)
+	fmt.Println(result.Error)
 	if result.Error != nil {
 		return plan, result.Error
 	}
