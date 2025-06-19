@@ -26,4 +26,6 @@ func TestCORS(t *testing.T) {
 	err := h(c)
 	require.NoError(t, err)
 	assert.Equal(t, "*", res.Header().Get("Access-Control-Allow-Origin"))
+	assert.Equal(t, "GET,POST,PUT,PATCH,DELETE", res.Header().Get("Access-Control-Allow-Methods"))
+	assert.Equal(t, "Origin, Content-Type, Accept, Authorization", res.Header().Get("Access-Control-Allow-Headers"))
 }

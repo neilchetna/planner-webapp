@@ -1,7 +1,7 @@
 "use client";
 import TaskCard from "@/ui/task/task-card";
 import { Box, Button, Container, Heading } from "@radix-ui/themes";
-import usePlan from "./hooks/usePlan";
+import { KeystrokeMap, useKeystroke, usePlan } from "@/lib/hooks";
 import { Task } from "@/models/task";
 import { use } from "react";
 
@@ -12,11 +12,20 @@ type PlansDetailPageProps = {
 };
 
 function PlansDetailPage({ params }: PlansDetailPageProps) {
-  const paramsPromise = use<Params>(params);
-  const { plan, selectedTaskId, editingTaskId, selectTask, setEditingTask } =
-    usePlan({
-      id: paramsPromise.id,
-    });
+  const { id } = use<Params>(params);
+  const {
+    plan,
+    selectedTaskId,
+    editingTaskId,
+    selectTask,
+    setEditingTask,
+    addNewBlankTask,
+    onTaskSubmit,
+    loading,
+    resetTasks,
+  } = usePlan({
+    id,
+  });
 
   function handleTaskClick(task: Task) {
     if (task.id === selectedTaskId) {
@@ -25,6 +34,13 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
       selectTask(task);
     }
   }
+  const cancelEditAndSelection: KeystrokeMap = {
+    keys: ["Escape"],
+    onPress: () => {
+      resetTasks();
+    },
+  };
+  useKeystroke({ keysMap: [cancelEditAndSelection] });
 
   return (
     <>
@@ -43,23 +59,28 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
             my="3"
             size="1"
             radius="full"
+            onClick={addNewBlankTask}
           >
             Add Task
           </Button>
-
-          {plan.tasks.map((task) => (
-            <Box
-              onDoubleClick={() => setEditingTask(task)}
-              onClick={() => handleTaskClick(task)}
-              key={task.id}
-            >
-              <TaskCard
-                isEditing={task.id === editingTaskId}
-                isSelected={task.id === selectedTaskId}
-                task={task}
-              />
-            </Box>
-          ))}
+          {loading ? (
+            <>Loading</>
+          ) : (
+            plan?.tasks?.map((task) => (
+              <Box
+                onDoubleClick={() => setEditingTask(task)}
+                onClick={() => handleTaskClick(task)}
+                key={task.id}
+              >
+                <TaskCard
+                  onTaskSubmit={onTaskSubmit}
+                  isEditing={task.id === editingTaskId}
+                  isSelected={task.id === selectedTaskId}
+                  task={task}
+                />
+              </Box>
+            ))
+          )}
         </Container>
       )}
     </>
