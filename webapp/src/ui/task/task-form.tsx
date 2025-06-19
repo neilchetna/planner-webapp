@@ -1,5 +1,5 @@
-import { Task } from "@/models/task";
-import { Button, Checkbox, Flex, Text } from "@radix-ui/themes";
+import { Task, TaskDTO, TaskDTOSchema } from "@/models";
+import { Button, Checkbox, Flex } from "@radix-ui/themes";
 import {
   IconHash,
   IconHourglassLow,
@@ -10,21 +10,44 @@ import GhostInput from "../ghost-input/ghost-input";
 
 type TaskFormProps = {
   task: Task;
+  onTaskSubmit(task: TaskDTO): Promise<void>;
 };
 
-function TaskForm({ task }: TaskFormProps) {
+function TaskForm({ task, onTaskSubmit }: TaskFormProps) {
+  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+
+    // Validate Schema
+    const res = TaskDTOSchema.safeParse(data);
+
+    if (res.success) {
+      await onTaskSubmit(res.data);
+    }
+  };
   return (
-    <form className="px-2">
+    <form
+      onClick={(e) => e.stopPropagation()}
+      onSubmit={(e) => onFormSubmit(e)}
+      className="px-2"
+    >
       <Flex className="gap-3 mb-5" align="center">
         <Checkbox className="self-start mt-2" />
         <div className="w-full">
           <GhostInput
+            name="title"
             className="text-base font-medium m-0"
             type="text"
             placeholder="New Task"
             defaultValue={task.title}
           />
-          <GhostInput className="text-sm" placeholder="Description" />
+          <GhostInput
+            defaultValue={task.description}
+            name="description"
+            className="text-sm"
+            placeholder="Description"
+          />
         </div>
       </Flex>
       <Flex className="items-center justify-between">
@@ -46,7 +69,9 @@ function TaskForm({ task }: TaskFormProps) {
             Tags
           </Button>
         </Flex>
-        <Text className="text-slate-500 text-xs pr-1">↵ Save task</Text>
+        <Button className="mr-0" type="submit" variant="ghost" size="1">
+          ↵ Save task
+        </Button>
       </Flex>
     </form>
   );

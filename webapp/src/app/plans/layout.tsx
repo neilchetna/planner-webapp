@@ -2,6 +2,7 @@
 import React from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Sidebar from "./components/sidebar";
+import KeystrokeListener from "@/ui/keystroke/keystroke-listener";
 
 type PlansLayoutProps = {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ function PlansLayout({ children }: PlansLayoutProps) {
       </Panel>
       <PanelResizeHandle />
       <Panel defaultSize={100 - 15} minSize={30}>
+        <KeystrokeListener />
         <div className="bg-slate-50 px-4 h-screen">{children}</div>
       </Panel>
     </PanelGroup>

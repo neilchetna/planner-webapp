@@ -1,4 +1,4 @@
-import { Task } from "@/models/task";
+import { Task, TaskDTO } from "@/models";
 import { Box, Checkbox, Flex, IconButton, Text } from "@radix-ui/themes";
 import { IconGripVertical } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -8,20 +8,26 @@ type TaskCardProps = {
   task: Task;
   isSelected: boolean;
   isEditing: boolean;
+  onTaskSubmit(taskId: string, task: TaskDTO): Promise<void>;
 };
 
-function TaskCard({ task, isSelected, isEditing }: TaskCardProps) {
+function TaskCard({
+  task,
+  isSelected,
+  isEditing,
+  onTaskSubmit,
+}: TaskCardProps) {
+  const handOnTaskSubmit = (taskDTO: TaskDTO) => onTaskSubmit(task.id, taskDTO);
   return (
     <Box
       className={clsx(
-        "relative rounded-md group pl-1 -ml-3 py-2",
+        "relative rounded-md group px-1 -ml-3 py-2",
         isSelected && !isEditing && "bg-blue-100",
         isEditing && "shadow bg-white",
         !isSelected && !isEditing && "hover:bg-slate-100"
       )}
     >
-      {isEditing && <TaskForm task={task} />}
-
+      {isEditing && <TaskForm onTaskSubmit={handOnTaskSubmit} task={task} />}
       {!isEditing && (
         <>
           <Flex
@@ -32,14 +38,19 @@ function TaskCard({ task, isSelected, isEditing }: TaskCardProps) {
               <IconGripVertical size="18px" />
             </IconButton>
           </Flex>
-          <Text
-            className="px-2 text-base flex items-center gap-3"
-            as="p"
-            weight="medium"
-          >
+          <Flex className="px-2 flex items-center gap-3">
             <Checkbox onClick={(e) => e.stopPropagation()} size="2" />
-            {task.title}
-          </Text>
+            <Box className="pr-10" width="100%" as="div">
+              <Text truncate as="p" weight="medium" className="text-base m-0">
+                {task.title}
+              </Text>
+              {task.description ? (
+                <Text truncate color="gray" as="p" size="1">
+                  {task.description}
+                </Text>
+              ) : null}
+            </Box>
+          </Flex>
         </>
       )}
     </Box>

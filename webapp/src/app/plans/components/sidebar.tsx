@@ -9,7 +9,7 @@ import {
   IconTargetArrow,
 } from "@tabler/icons-react";
 import React, { ReactElement } from "react";
-import usePlans from "@/hooks/usePlans";
+import { usePlans } from "@/lib/hooks";
 
 export type NavigationItem = {
   name: string;
