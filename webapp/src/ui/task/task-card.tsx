@@ -3,6 +3,7 @@ import { Box, Checkbox, Flex, IconButton, Text } from "@radix-ui/themes";
 import { IconGripVertical } from "@tabler/icons-react";
 import clsx from "clsx";
 import TaskForm from "./task-form";
+import { BLANK_TASK } from "@/lib/utils/const";
 
 type TaskCardProps = {
   task: Task;
@@ -33,6 +34,7 @@ function TaskCard({
     >
       {isEditing && (
         <TaskForm
+          isDeleteAvailable={task.id !== BLANK_TASK.id}
           onTaskDelete={handleOnTaskDelete}
           onTaskSubmit={handleOnTaskSubmit}
           task={task}
