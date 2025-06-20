@@ -9,6 +9,7 @@ type TaskCardProps = {
   isSelected: boolean;
   isEditing: boolean;
   onTaskSubmit(taskId: string, task: TaskDTO): Promise<void>;
+  deleteTask(taskId: string): Promise<void>;
 };
 
 function TaskCard({
@@ -16,8 +17,11 @@ function TaskCard({
   isSelected,
   isEditing,
   onTaskSubmit,
+  deleteTask,
 }: TaskCardProps) {
-  const handOnTaskSubmit = (taskDTO: TaskDTO) => onTaskSubmit(task.id, taskDTO);
+  const handleOnTaskSubmit = (taskDTO: TaskDTO) =>
+    onTaskSubmit(task.id, taskDTO);
+  const handleOnTaskDelete = () => deleteTask(task.id);
   return (
     <Box
       className={clsx(
@@ -27,7 +31,13 @@ function TaskCard({
         !isSelected && !isEditing && "hover:bg-slate-100"
       )}
     >
-      {isEditing && <TaskForm onTaskSubmit={handOnTaskSubmit} task={task} />}
+      {isEditing && (
+        <TaskForm
+          onTaskDelete={handleOnTaskDelete}
+          onTaskSubmit={handleOnTaskSubmit}
+          task={task}
+        />
+      )}
       {!isEditing && (
         <>
           <Flex

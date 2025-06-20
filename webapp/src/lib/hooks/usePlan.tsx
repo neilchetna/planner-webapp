@@ -19,6 +19,7 @@ type UsePlan = {
   setEditingTask: (task: Task) => void;
   addNewBlankTask: () => void;
   onTaskSubmit: (taskId: string, task: TaskDTO) => Promise<void>;
+  deleteTask: (taskId: string) => Promise<void>;
   resetTasks: () => void;
 };
 
@@ -28,6 +29,8 @@ export function usePlan({ id }: UsePlanProps): UsePlan {
   const addBlankTask = usePlanStore((s) => s.addBlankTask);
   const updateTaskById = usePlanStore((s) => s.updateTaskById);
   const updateTaskStore = usePlanStore((s) => s.updateTask);
+  const removeTask = usePlanStore((s) => s.removeTask);
+
   const { ...queryData } = useQuery<Plan>({
     queryFn: getPlan,
     setDataState: updatePlan,
@@ -67,13 +70,18 @@ export function usePlan({ id }: UsePlanProps): UsePlan {
   async function addNewTask(task: TaskDTO) {
     const res = await taskApi.postTask(id, task);
     updateTaskById(id, BLANK_TASK.id, res);
-    setEditingTaskId("");
+    resetTasks();
   }
 
   async function updateTask(taskId: string, task: TaskDTO) {
     const res = await taskApi.patchTask(id, taskId, task);
     updateTaskStore(id, res);
-    setEditingTaskId("");
+    resetTasks();
+  }
+
+  async function deleteTask(taskId: string) {
+    await taskApi.deleteTask(id, taskId);
+    removeTask(id, taskId);
   }
 
   function resetTasks() {
@@ -90,6 +98,7 @@ export function usePlan({ id }: UsePlanProps): UsePlan {
     addNewBlankTask,
     onTaskSubmit,
     resetTasks,
+    deleteTask,
     ...queryData,
   };
 }

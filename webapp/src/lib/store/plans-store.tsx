@@ -31,7 +31,7 @@ export const usePlanStore = create<PlanStore>()(
       }),
     addBlankTask: (planId: string) =>
       set((state) => {
-        const planIndex = state.plans.findIndex((p) => String(p.id) === planId);
+        const planIndex = state.plans.findIndex((p) => p.id === planId);
         if (planIndex < 0) return;
 
         const tasks = state.plans[planIndex].tasks;
@@ -39,7 +39,7 @@ export const usePlanStore = create<PlanStore>()(
       }),
     updateTask: (planId: string, task: Task) =>
       set((state) => {
-        const planIndex = state.plans.findIndex((p) => String(p.id) === planId);
+        const planIndex = state.plans.findIndex((p) => p.id === planId);
         if (planIndex < 0) return;
 
         const tasks = state.plans[planIndex].tasks;
@@ -50,19 +50,22 @@ export const usePlanStore = create<PlanStore>()(
       }),
     updateTaskById: (planId: string, taskId: string, task: Task) =>
       set((state) => {
-        const planIndex = state.plans.findIndex((p) => String(p.id) === planId);
+        const planIndex = state.plans.findIndex((p) => p.id === planId);
         if (planIndex < 0) return;
 
         const tasks = state.plans[planIndex].tasks;
-        const taskIndex = tasks.findIndex((t) => String(t.id) === taskId);
+        const taskIndex = tasks.findIndex((t) => t.id === taskId);
         tasks[taskIndex] = task;
       }),
     removeTask: (planId: string, taskId: string) =>
       set((state) => {
-        const planIndex = state.plans.findIndex((p) => String(p.id) === planId);
+        const planIndex = state.plans.findIndex((p) => p.id === planId);
         if (planIndex < 0) return;
 
-        state.plans[planIndex].tasks.filter((t) => t.id === taskId);
+        const tasks = state.plans[planIndex].tasks.filter(
+          (t) => t.id !== taskId
+        );
+        state.plans[planIndex].tasks = tasks;
       }),
   }))
 );

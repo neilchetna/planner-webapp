@@ -2,6 +2,8 @@ package models
 
 import (
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 type Task struct {
@@ -10,5 +12,5 @@ type Task struct {
 	Description string       `json:"description"`
 	StartedAt   sql.NullTime `json:"startedAt"`
 	DueDate     sql.NullTime `json:"dueDate"`
-	PlanId      uint         `json:"planId"`
+	PlanId      uuid.UUID    `gorm:"type:uuid" json:"planId"`
 }

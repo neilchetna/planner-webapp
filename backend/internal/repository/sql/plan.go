@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/neilchetna/planner-webapp/backend/models"
 	"gorm.io/gorm"
 )
@@ -18,7 +19,7 @@ func NewPlanRepositoryBuilder(db *gorm.DB) *PlanRepository {
 }
 
 func (m *PlanRepository) Create(ctx context.Context, plan *models.Plan) error {
-	result := m.db.WithContext(ctx).Omit("ID").Create(plan)
+	result := m.db.WithContext(ctx).Create(plan)
 
 	if result.Error != nil {
 		return result.Error
@@ -36,7 +37,7 @@ func (m *PlanRepository) Query(ctx context.Context, limit int) ([]models.Plan, e
 }
 
 func (m *PlanRepository) Update(ctx context.Context, plan *models.Plan) error {
-	if plan.ID == 0 {
+	if plan.ID == uuid.Nil {
 		return errors.New("plan id not found")
 	}
 
@@ -48,7 +49,7 @@ func (m *PlanRepository) Update(ctx context.Context, plan *models.Plan) error {
 	return nil
 }
 
-func (m *PlanRepository) Get(ctx context.Context, id uint) (models.Plan, error) {
+func (m *PlanRepository) Get(ctx context.Context, id uuid.UUID) (models.Plan, error) {
 	var plan models.Plan
 	result := m.db.WithContext(ctx).Preload("Tasks").First(&plan, "id = ?", id)
 	fmt.Println(result.Error)
@@ -59,7 +60,7 @@ func (m *PlanRepository) Get(ctx context.Context, id uint) (models.Plan, error) 
 	return plan, nil
 }
 
-func (m *PlanRepository) Delete(ctx context.Context, id uint) error {
+func (m *PlanRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	result := m.db.Delete(&models.Plan{}, id)
 
 	return result.Error

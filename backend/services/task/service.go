@@ -3,12 +3,13 @@ package task
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/neilchetna/planner-webapp/backend/models"
 )
 
 type TaskRepository interface {
 	Create(ctx context.Context, task *models.Task) error
-	Delete(ctx context.Context, id uint) error
+	Delete(ctx context.Context, id uuid.UUID) error
 	Update(ctx context.Context, task *models.Task) error
 }
 
@@ -30,7 +31,7 @@ func (t *Service) Create(ctx context.Context, task *models.Task) error {
 	return nil
 }
 
-func (t *Service) Delete(ctx context.Context, id uint) error {
+func (t *Service) Delete(ctx context.Context, id uuid.UUID) error {
 	err := t.taskRepo.Delete(ctx, id)
 
 	if err != nil {

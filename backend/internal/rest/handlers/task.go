@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/neilchetna/planner-webapp/backend/internal/rest/utils"
 	"github.com/neilchetna/planner-webapp/backend/models"
@@ -12,7 +13,7 @@ import (
 
 type TaskService interface {
 	Create(ctx context.Context, task *models.Task) error
-	Delete(ctx context.Context, id uint) error
+	Delete(ctx context.Context, id uuid.UUID) error
 	Update(ctx context.Context, task *models.Task) error
 }
 
@@ -47,10 +48,13 @@ func validateTask(m *models.Task) (bool, error) {
 }
 
 func (a *TaskHandler) Create(c echo.Context) error {
-	planId, _ := utils.ParamUint(c, "planId")
-	task := models.Task{PlanId: uint(planId)}
+	planId, err := utils.ParseIDParam(c, "planId")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid plan id")
+	}
+	task := models.Task{PlanId: planId}
 
-	err := c.Bind(&task)
+	err = c.Bind(&task)
 
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
@@ -70,9 +74,12 @@ func (a *TaskHandler) Create(c echo.Context) error {
 }
 
 func (a *TaskHandler) Delete(c echo.Context) error {
-	taskId, _ := utils.ParamUint(c, "taskId")
+	taskId, err := utils.ParseIDParam(c, "taskId")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid task ID")
+	}
 	ctx := c.Request().Context()
-	err := a.Service.Delete(ctx, taskId)
+	err = a.Service.Delete(ctx, taskId)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
@@ -82,11 +89,14 @@ func (a *TaskHandler) Delete(c echo.Context) error {
 }
 
 func (a *TaskHandler) Update(c echo.Context) error {
-	taskId, _ := utils.ParamUint(c, "taskId")
+	taskId, err := utils.ParseIDParam(c, "taskId")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid task ID")
+	}
 
 	var task models.Task
 	task.ID = taskId
-	err := c.Bind(&task)
+	err = c.Bind(&task)
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}

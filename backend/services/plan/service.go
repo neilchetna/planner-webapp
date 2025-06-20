@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/neilchetna/planner-webapp/backend/models"
 )
 
@@ -11,8 +12,8 @@ type PlanRepository interface {
 	Create(ctx context.Context, plan *models.Plan) error
 	Query(ctx context.Context, limit int) ([]models.Plan, error)
 	Update(ctx context.Context, plan *models.Plan) error
-	Get(ctx context.Context, id uint) (models.Plan, error)
-	Delete(ctx context.Context, id uint) error
+	Get(ctx context.Context, id uuid.UUID) (models.Plan, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type Service struct {
@@ -35,7 +36,7 @@ func (p *Service) Query(ctx context.Context, limit int) ([]models.Plan, error) {
 	return res, err
 }
 
-func (p *Service) Get(ctx context.Context, id uint) (models.Plan, error) {
+func (p *Service) Get(ctx context.Context, id uuid.UUID) (models.Plan, error) {
 	res, err := p.planRepo.Get(ctx, id)
 
 	if err != nil {
@@ -56,15 +57,11 @@ func (p *Service) Create(ctx context.Context, plan *models.Plan) error {
 	return nil
 }
 
-func (p *Service) Delete(ctx context.Context, id uint) error {
-	existingPlan, err := p.planRepo.Get(ctx, id)
+func (p *Service) Delete(ctx context.Context, id uuid.UUID) error {
+	_, err := p.planRepo.Get(ctx, id)
 
 	if err != nil {
 		return nil
-	}
-
-	if existingPlan.ID == 0 {
-		return models.ErrNotFound
 	}
 
 	return p.planRepo.Delete(ctx, id)

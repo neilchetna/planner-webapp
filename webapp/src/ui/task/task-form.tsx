@@ -5,15 +5,17 @@ import {
   IconHourglassLow,
   IconListCheck,
   IconTargetArrow,
+  IconTrash,
 } from "@tabler/icons-react";
 import GhostInput from "../ghost-input/ghost-input";
 
 type TaskFormProps = {
   task: Task;
   onTaskSubmit(task: TaskDTO): Promise<void>;
+  onTaskDelete(): void;
 };
 
-function TaskForm({ task, onTaskSubmit }: TaskFormProps) {
+function TaskForm({ task, onTaskSubmit, onTaskDelete }: TaskFormProps) {
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -69,9 +71,29 @@ function TaskForm({ task, onTaskSubmit }: TaskFormProps) {
             Tags
           </Button>
         </Flex>
-        <Button className="mr-0" type="submit" variant="ghost" size="1">
-          ↵ Save task
-        </Button>
+        <Flex gap="4">
+          <Button
+            color="red"
+            onClick={(e) => {
+              e.stopPropagation();
+              onTaskDelete();
+            }}
+            className="mr-0 rounded-md"
+            variant="ghost"
+            size="1"
+          >
+            <IconTrash size={16} />
+            Delete task
+          </Button>
+          <Button
+            className="mr-0 rounded-md"
+            type="submit"
+            variant="ghost"
+            size="1"
+          >
+            ↵ Save task
+          </Button>
+        </Flex>
       </Flex>
     </form>
   );

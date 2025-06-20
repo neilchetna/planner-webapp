@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/neilchetna/planner-webapp/backend/models"
 	"gorm.io/gorm"
 )
@@ -17,7 +18,7 @@ func NewTaskRepositoryBuilder(db *gorm.DB) *TaskRepository {
 }
 
 func (m *TaskRepository) Create(ctx context.Context, task *models.Task) error {
-	res := m.db.WithContext(ctx).Omit("ID").Create(task)
+	res := m.db.WithContext(ctx).Create(task)
 
 	if res.Error != nil {
 		return res.Error
@@ -26,7 +27,7 @@ func (m *TaskRepository) Create(ctx context.Context, task *models.Task) error {
 	return nil
 }
 
-func (m *TaskRepository) Delete(ctx context.Context, id uint) error {
+func (m *TaskRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	res := m.db.WithContext(ctx).Delete(&models.Task{}, id)
 
 	if res.Error != nil {
@@ -37,7 +38,7 @@ func (m *TaskRepository) Delete(ctx context.Context, id uint) error {
 }
 
 func (m *TaskRepository) Update(ctx context.Context, task *models.Task) error {
-	if task.ID == 0 {
+	if task.ID == uuid.Nil {
 		return errors.New("task id not found")
 	}
 	res := m.db.WithContext(ctx).Model(&models.Task{}).Where("id = ?", task.ID).Omit("ID").Updates(task)
