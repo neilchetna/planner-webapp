@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/neilchetna/planner-webapp/backend/internal/constants"
 	"github.com/neilchetna/planner-webapp/backend/internal/rest/utils"
@@ -18,8 +19,8 @@ type PlanService interface {
 	Create(ctx context.Context, plan *models.Plan) error
 	Query(ctx context.Context, limit int) ([]models.Plan, error)
 	Update(ctx context.Context, plan *models.Plan) error
-	Get(ctx context.Context, id uint) (models.Plan, error)
-	Delete(ctx context.Context, id uint) error
+	Get(ctx context.Context, id uuid.UUID) (models.Plan, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type PlanDTO struct {
@@ -75,11 +76,15 @@ func (a *PlanHandler) Create(c echo.Context) error {
 }
 
 func (a *PlanHandler) Update(c echo.Context) error {
-	planId, _ := utils.ParamUint(c, "id")
+	planId, err := utils.ParseIDParam(c, "id")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid plan ID ")
+	}
+
 	var plan models.Plan
 	plan.ID = planId
 
-	err := c.Bind(&plan)
+	err = c.Bind(&plan)
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
@@ -94,11 +99,14 @@ func (a *PlanHandler) Update(c echo.Context) error {
 }
 
 func (a *PlanHandler) Get(c echo.Context) error {
-	planId, _ := utils.ParamUint(c, "id")
+	planId, err := utils.ParseIDParam(c, "id")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid plan ID")
+	}
 
 	ctx := c.Request().Context()
 	var plan models.Plan
-	plan, err := a.Service.Get(ctx, planId)
+	plan, err = a.Service.Get(ctx, planId)
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, "Plan not found")
@@ -127,10 +135,13 @@ func (a *PlanHandler) Query(c echo.Context) error {
 }
 
 func (a *PlanHandler) Delete(c echo.Context) error {
-	planId, _ := utils.ParamUint(c, "id")
+	planId, err := utils.ParseIDParam(c, "id")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid plan ID")
+	}
 
 	ctx := c.Request().Context()
-	err := a.Service.Delete(ctx, planId)
+	err = a.Service.Delete(ctx, planId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

@@ -16,5 +16,9 @@ export function apiFactory() {
         .patch(`/plan/${planId}/task/${taskId}`, taskDTO)
         .then((res) => res.data);
     },
+
+    async deleteTask(planId: string, taskId: string): Promise<void> {
+      return http.delete(`/plan/${planId}/task/${taskId}`);
+    },
   };
 }

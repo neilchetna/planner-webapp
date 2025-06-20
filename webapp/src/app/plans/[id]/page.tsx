@@ -23,6 +23,7 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
     onTaskSubmit,
     loading,
     resetTasks,
+    deleteTask,
   } = usePlan({
     id,
   });
@@ -73,6 +74,7 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
                 key={task.id}
               >
                 <TaskCard
+                  deleteTask={deleteTask}
                   onTaskSubmit={onTaskSubmit}
                   isEditing={task.id === editingTaskId}
                   isSelected={task.id === selectedTaskId}
