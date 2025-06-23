@@ -24,7 +24,7 @@ function SidebarMenuItem({
       href={pathname}
     >
       <Flex align="center" justify="between">
-        <Flex className="min-w-0" align="center" gap="4">
+        <Flex className="min-w-0" align="center" gap="3">
           <Text
             className={clsx("text-slate-600", isActive && "text-slate-800")}
           >
