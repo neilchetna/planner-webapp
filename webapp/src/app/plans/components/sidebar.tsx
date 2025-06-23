@@ -1,6 +1,6 @@
 "use client";
-import { Box, Text } from "@radix-ui/themes";
-import { usePathname } from "next/navigation";
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
+import { redirect, usePathname } from "next/navigation";
 import SidebarMenuItem from "./sidebar-menu-item";
 import {
   IconCalendar,
@@ -10,6 +10,7 @@ import {
 } from "@tabler/icons-react";
 import React, { ReactElement } from "react";
 import { usePlans } from "@/lib/hooks";
+import { BLANK_PLAN } from "@/lib/utils/const";
 
 export type NavigationItem = {
   name: string;
@@ -22,6 +23,8 @@ export type NavigationItem = {
 type NavigationList = {
   listTitle: string;
   list: NavigationItem[];
+  actionText?: string;
+  actionFn?: () => void;
 };
 
 const activityItems: NavigationList = {
@@ -52,7 +55,7 @@ const activityItems: NavigationList = {
 
 function Sidebar() {
   const pathname = usePathname();
-  const { plans } = usePlans();
+  const { plans, createPlan } = usePlans();
 
   const plansList = plans?.map((plan) => ({
     name: plan.title,
@@ -76,20 +79,44 @@ function Sidebar() {
     return "/plans" + subpathWithoutTrailingSlash;
   };
 
+  const onCreateNewPlan = async () => {
+    const plan = await createPlan(BLANK_PLAN);
+    const path = getRedirectionPath(plan.id);
+    redirect(path);
+  };
+
   const items: NavigationList[] = [
     activityItems,
-    { listTitle: "Plans", list: plansList || [] },
+    {
+      actionText: "New Plan",
+      actionFn: () => onCreateNewPlan(),
+      listTitle: "Plans",
+      list: plansList || [],
+    },
   ];
 
   return (
     <Box height="100vh" p="4" className="bg-slate-100">
       <nav>
         <ul>
-          {items.map(({ listTitle, list }) => (
+          {items.map(({ actionText, listTitle, list, actionFn }) => (
             <li className="mb-2" key={listTitle}>
-              <Text mb="2" as="p" size="1" className="text-gray-500">
-                {listTitle}
-              </Text>
+              <Flex justify="between">
+                <Text mb="2" as="p" weight="medium" className="text-gray-500">
+                  {listTitle}
+                </Text>
+                {actionText && (
+                  <Button
+                    className="rounded-md"
+                    variant="soft"
+                    size="1"
+                    color="gray"
+                    onClick={actionFn}
+                  >
+                    {actionText}
+                  </Button>
+                )}
+              </Flex>
               <ul>
                 {list.map((menuItem) => (
                   <li key={menuItem.name}>

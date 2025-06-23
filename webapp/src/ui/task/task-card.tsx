@@ -11,6 +11,7 @@ type TaskCardProps = {
   isEditing: boolean;
   onTaskSubmit(taskId: string, task: TaskDTO): Promise<void>;
   deleteTask(taskId: string): Promise<void>;
+  resetTaskStates(): void;
 };
 
 function TaskCard({
@@ -19,6 +20,7 @@ function TaskCard({
   isEditing,
   onTaskSubmit,
   deleteTask,
+  resetTaskStates,
 }: TaskCardProps) {
   const handleOnTaskSubmit = (taskDTO: TaskDTO) =>
     onTaskSubmit(task.id, taskDTO);
@@ -33,12 +35,14 @@ function TaskCard({
       )}
     >
       {isEditing && (
-        <TaskForm
-          isDeleteAvailable={task.id !== BLANK_TASK.id}
-          onTaskDelete={handleOnTaskDelete}
-          onTaskSubmit={handleOnTaskSubmit}
-          task={task}
-        />
+        <div onBlur={resetTaskStates} tabIndex={1}>
+          <TaskForm
+            isDeleteAvailable={task.id !== BLANK_TASK.id}
+            onTaskDelete={handleOnTaskDelete}
+            onTaskSubmit={handleOnTaskSubmit}
+            task={task}
+          />
+        </div>
       )}
       {!isEditing && (
         <>

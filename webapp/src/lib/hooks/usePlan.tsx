@@ -21,6 +21,8 @@ type UsePlan = {
   onTaskSubmit: (taskId: string, task: TaskDTO) => Promise<void>;
   deleteTask: (taskId: string) => Promise<void>;
   resetTasks: () => void;
+  updatePlanTitle: (newTitle: string) => Promise<void>;
+  deletePlan: () => Promise<void>;
 };
 
 export function usePlan({ id }: UsePlanProps): UsePlan {
@@ -30,6 +32,7 @@ export function usePlan({ id }: UsePlanProps): UsePlan {
   const updateTaskById = usePlanStore((s) => s.updateTaskById);
   const updateTaskStore = usePlanStore((s) => s.updateTask);
   const removeTask = usePlanStore((s) => s.removeTask);
+  const removePlan = usePlanStore((s) => s.removePlan);
 
   const { ...queryData } = useQuery<Plan>({
     queryFn: getPlan,
@@ -47,6 +50,7 @@ export function usePlan({ id }: UsePlanProps): UsePlan {
   }
 
   function selectTask(task: Task) {
+    removeTask(id, BLANK_TASK.id);
     setSelectedTaskId(task.id);
   }
 
@@ -84,9 +88,20 @@ export function usePlan({ id }: UsePlanProps): UsePlan {
     removeTask(id, taskId);
   }
 
+  async function updatePlanTitle(title: string) {
+    const res = await planApi.patchPlan(id, { title });
+    updatePlan(res);
+  }
+
+  async function deletePlan() {
+    await planApi.deletePlan(id);
+    removePlan(id);
+  }
+
   function resetTasks() {
     setEditingTaskId("");
     setSelectedTaskId("");
+    removeTask(id, BLANK_TASK.id);
   }
 
   return {
@@ -99,6 +114,8 @@ export function usePlan({ id }: UsePlanProps): UsePlan {
     onTaskSubmit,
     resetTasks,
     deleteTask,
+    updatePlanTitle,
+    deletePlan,
     ...queryData,
   };
 }

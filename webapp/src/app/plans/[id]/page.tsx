@@ -1,9 +1,12 @@
 "use client";
-import TaskCard from "@/ui/task/task-card";
-import { Box, Button, Container, Heading } from "@radix-ui/themes";
 import { KeystrokeMap, useKeystroke, usePlan } from "@/lib/hooks";
 import { Task } from "@/models/task";
+import TaskCard from "@/ui/task/task-card";
+import { Box, Button, Container, Flex, Heading } from "@radix-ui/themes";
 import { use } from "react";
+import PlanMenuDropdown from "./(components)/plan-menu-dropdown";
+import PlanTitle from "./(components)/plan-title";
+import { redirect } from "next/navigation";
 
 type Params = { id: string };
 
@@ -24,6 +27,8 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
     loading,
     resetTasks,
     deleteTask,
+    updatePlanTitle,
+    deletePlan,
   } = usePlan({
     id,
   });
@@ -35,6 +40,12 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
       selectTask(task);
     }
   }
+
+  function handlePlanDelete() {
+    deletePlan();
+    redirect("/plans");
+  }
+
   const cancelEditAndSelection: KeystrokeMap = {
     keys: ["Escape"],
     onPress: () => {
@@ -45,19 +56,21 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
 
   return (
     <>
-      <Box py="4">Options</Box>
+      <Flex justify="between" className="w-full" py="4" px="4">
+        <p></p>
+        <PlanMenuDropdown onPlanDelete={handlePlanDelete} />
+      </Flex>
       {plan && (
         <Container p="3" size="3">
-          <Heading as="h1">
+          <Heading className="flex gap-2" as="h1">
             {plan.icon}
-            {"  "}
-            {plan.title}
+            <PlanTitle plan={plan} onTitleSubmit={updatePlanTitle} />
           </Heading>
           <Button
             className="cursor-pointer"
             color="green"
             variant="soft"
-            my="3"
+            my="5"
             size="1"
             radius="full"
             onClick={addNewBlankTask}
@@ -74,6 +87,7 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
                 key={task.id}
               >
                 <TaskCard
+                  resetTaskStates={resetTasks}
                   deleteTask={deleteTask}
                   onTaskSubmit={onTaskSubmit}
                   isEditing={task.id === editingTaskId}
