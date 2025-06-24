@@ -1,6 +1,7 @@
 import { Task, TaskDTO, TaskDTOSchema } from "@/models";
 import { Button, Checkbox, Flex } from "@radix-ui/themes";
 import {
+  IconArrowLeft,
   IconHash,
   IconHourglassLow,
   IconListCheck,
@@ -14,6 +15,7 @@ type TaskFormProps = {
   isDeleteAvailable: boolean;
   onTaskSubmit(task: TaskDTO): Promise<void>;
   onTaskDelete(): void;
+  onBackClick(): void;
 };
 
 function TaskForm({
@@ -21,6 +23,7 @@ function TaskForm({
   isDeleteAvailable,
   onTaskSubmit,
   onTaskDelete,
+  onBackClick,
 }: TaskFormProps) {
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,11 +38,21 @@ function TaskForm({
     }
   };
   return (
-    <form
-      onClick={(e) => e.stopPropagation()}
-      onSubmit={(e) => onFormSubmit(e)}
-      className="px-2"
-    >
+    <form onSubmit={(e) => onFormSubmit(e)} className="px-2 relative">
+      <Flex align="center" className="absolute -left-10 h-full">
+        <Button
+          type="button"
+          onClick={() => {
+            onBackClick();
+          }}
+          className="px-1.5"
+          color="gray"
+          size="2"
+          variant="ghost"
+        >
+          <IconArrowLeft size={19} />
+        </Button>
+      </Flex>
       <Flex className="gap-3 mb-5" align="center">
         <Checkbox className="self-start mt-2" />
         <div className="w-full">
@@ -60,19 +73,43 @@ function TaskForm({
       </Flex>
       <Flex className="items-center justify-between">
         <Flex className="gap-2">
-          <Button color="gray" className="rounded-full" size="1" variant="soft">
+          <Button
+            type="button"
+            color="gray"
+            className="rounded-full"
+            size="1"
+            variant="soft"
+          >
             <IconListCheck size={16} />
             Reminder
           </Button>
-          <Button color="gray" className="rounded-full" size="1" variant="soft">
+          <Button
+            type="button"
+            color="gray"
+            className="rounded-full"
+            size="1"
+            variant="soft"
+          >
             <IconHourglassLow size={16} />
             Deadline
           </Button>
-          <Button color="gray" className="rounded-full" size="1" variant="soft">
+          <Button
+            type="button"
+            color="gray"
+            className="rounded-full"
+            size="1"
+            variant="soft"
+          >
             <IconTargetArrow size={16} />
             Add Goal
           </Button>
-          <Button color="gray" className="rounded-full" size="1" variant="soft">
+          <Button
+            type="button"
+            color="gray"
+            className="rounded-full"
+            size="1"
+            variant="soft"
+          >
             <IconHash size={16} />
             Tags
           </Button>
@@ -80,9 +117,9 @@ function TaskForm({
         <Flex gap="4">
           {isDeleteAvailable && (
             <Button
+              type="button"
               color="red"
-              onClick={(e) => {
-                e.stopPropagation();
+              onClick={() => {
                 onTaskDelete();
               }}
               className="mr-0 rounded-md"

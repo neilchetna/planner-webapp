@@ -1,12 +1,19 @@
 "use client";
-import { KeystrokeMap, useKeystroke, usePlan } from "@/lib/hooks";
+import {
+  KeystrokeMap,
+  useFetchPlan,
+  useKeystroke,
+  usePlans,
+  useTasks,
+} from "@/lib/hooks";
 import { Task } from "@/models/task";
 import TaskCard from "@/ui/task/task-card";
 import { Box, Button, Container, Flex, Heading } from "@radix-ui/themes";
+import { IconPlaylistAdd } from "@tabler/icons-react";
+import { redirect } from "next/navigation";
 import { use } from "react";
 import PlanMenuDropdown from "./(components)/plan-menu-dropdown";
 import PlanTitle from "./(components)/plan-title";
-import { redirect } from "next/navigation";
 
 type Params = { id: string };
 
@@ -16,20 +23,18 @@ type PlansDetailPageProps = {
 
 function PlansDetailPage({ params }: PlansDetailPageProps) {
   const { id } = use<Params>(params);
+  const { plan, loading } = useFetchPlan({ id });
+  const { updatePlanTitle, deletePlan } = usePlans();
   const {
-    plan,
     selectedTaskId,
     editingTaskId,
     selectTask,
     setEditingTask,
     addNewBlankTask,
     onTaskSubmit,
-    loading,
     resetTasks,
     deleteTask,
-    updatePlanTitle,
-    deletePlan,
-  } = usePlan({
+  } = useTasks({
     id,
   });
 
@@ -42,8 +47,12 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
   }
 
   function handlePlanDelete() {
-    deletePlan();
+    deletePlan(id);
     redirect("/plans");
+  }
+
+  function handleUpdatePlanTitle(title: string) {
+    updatePlanTitle(id, title);
   }
 
   const cancelEditAndSelection: KeystrokeMap = {
@@ -64,17 +73,18 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
         <Container p="3" size="3">
           <Heading className="flex gap-2" as="h1">
             {plan.icon}
-            <PlanTitle plan={plan} onTitleSubmit={updatePlanTitle} />
+            <PlanTitle plan={plan} onTitleSubmit={handleUpdatePlanTitle} />
           </Heading>
           <Button
             className="cursor-pointer"
             color="green"
             variant="soft"
             my="5"
-            size="1"
-            radius="full"
+            size="2"
+            radius="large"
             onClick={addNewBlankTask}
           >
+            <IconPlaylistAdd size={20} />
             Add Task
           </Button>
           {loading ? (

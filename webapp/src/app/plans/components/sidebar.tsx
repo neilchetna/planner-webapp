@@ -11,6 +11,7 @@ import {
 import React, { ReactElement } from "react";
 import { usePlans } from "@/lib/hooks";
 import { BLANK_PLAN } from "@/lib/utils/const";
+import { useFetchPlans } from "@/lib/hooks";
 
 export type NavigationItem = {
   name: string;
@@ -55,7 +56,8 @@ const activityItems: NavigationList = {
 
 function Sidebar() {
   const pathname = usePathname();
-  const { plans, createPlan } = usePlans();
+  const { plans } = useFetchPlans();
+  const { createPlan } = usePlans();
 
   const plansList = plans?.map((plan) => ({
     name: plan.title,
