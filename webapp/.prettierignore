@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+eslint-results.sarif
+.gitignore
+.env.local
+.next/
+node_modules/
+next-env.d.ts

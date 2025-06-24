@@ -2,16 +2,10 @@
 import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { redirect, usePathname } from "next/navigation";
 import SidebarMenuItem from "./sidebar-menu-item";
-import {
-  IconCalendar,
-  IconLayoutKanban,
-  IconProps,
-  IconTargetArrow,
-} from "@tabler/icons-react";
+import { IconCalendar, IconLayoutKanban, IconProps, IconTargetArrow } from "@tabler/icons-react";
 import React, { ReactElement } from "react";
-import { usePlans } from "@/lib/hooks";
+import { usePlans , useFetchPlans } from "@/lib/hooks";
 import { BLANK_PLAN } from "@/lib/utils/const";
-import { useFetchPlans } from "@/lib/hooks";
 
 export type NavigationItem = {
   name: string;
@@ -59,7 +53,7 @@ function Sidebar() {
   const { plans } = useFetchPlans();
   const { createPlan } = usePlans();
 
-  const plansList = plans?.map((plan) => ({
+  const plansList = plans?.map(plan => ({
     name: plan.title,
     title: plan.title,
     icon: plan.icon,
@@ -67,7 +61,7 @@ function Sidebar() {
   }));
 
   // Setting stylings for activityListItems
-  activityItems.list.forEach((item) => {
+  activityItems.list.forEach(item => {
     item.icon = React.cloneElement(item.icon as ReactElement<IconProps>, {
       stroke: 2,
       height: 20,
@@ -120,13 +114,11 @@ function Sidebar() {
                 )}
               </Flex>
               <ul>
-                {list.map((menuItem) => (
+                {list.map(menuItem => (
                   <li key={menuItem.name}>
                     <SidebarMenuItem
                       {...menuItem}
-                      isActive={
-                        getRedirectionPath(menuItem.pathname) === pathname
-                      }
+                      isActive={getRedirectionPath(menuItem.pathname) === pathname}
                       pathname={getRedirectionPath(menuItem.pathname)}
                     />
                   </li>
