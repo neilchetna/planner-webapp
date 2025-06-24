@@ -50,7 +50,7 @@ function PlanMenuDropdown({ onPlanDelete }: Props) {
     },
   ];
 
-  menuItems.forEach((item) => {
+  menuItems.forEach(item => {
     item.icon = cloneElement(item.icon as ReactElement<IconProps>, {
       size: 20,
     });
@@ -61,7 +61,7 @@ function PlanMenuDropdown({ onPlanDelete }: Props) {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <Button
-            className="px-1.5 self-end"
+            className="self-end px-1.5"
             color="gray"
             size="3"
             variant="ghost"
@@ -71,12 +71,9 @@ function PlanMenuDropdown({ onPlanDelete }: Props) {
           </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content variant="soft">
-          {menuItems.map((item) => (
+          {menuItems.map(item => (
             <Fragment key={item.label}>
-              <DropdownMenu.Item
-                onClick={item.onClick}
-                {...item.additionalProps}
-              >
+              <DropdownMenu.Item onClick={item.onClick} {...item.additionalProps}>
                 {item.icon}
                 {item.label}
               </DropdownMenu.Item>

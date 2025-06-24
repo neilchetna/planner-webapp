@@ -11,11 +11,11 @@ type Props = {
 };
 
 export function useKeystroke({ keysMap = [] }: Props) {
-  const pressedKeys = useKeystrokeStore((s) => s.pressedKeys);
+  const pressedKeys = useKeystrokeStore(s => s.pressedKeys);
 
   function handleKeypress() {
     keysMap.forEach(({ keys, onPress }) => {
-      const isPressed = keys.every((key) => pressedKeys.has(key));
+      const isPressed = keys.every(key => pressedKeys.has(key));
       if (isPressed) onPress();
     });
   }

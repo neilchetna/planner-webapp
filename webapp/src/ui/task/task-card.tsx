@@ -21,20 +21,19 @@ function TaskCard({
   deleteTask,
   resetTaskStates,
 }: TaskCardProps) {
-  const handleOnTaskSubmit = (taskDTO: TaskDTO) =>
-    onTaskSubmit(task.id, taskDTO);
+  const handleOnTaskSubmit = (taskDTO: TaskDTO) => onTaskSubmit(task.id, taskDTO);
   const handleOnTaskDelete = () => deleteTask(task.id);
   return (
     <Box
       className={clsx(
-        "rounded-md px-1 -ml-3 py-2",
+        "-ml-3 rounded-md px-1 py-2",
         isSelected && !isEditing && "bg-blue-100",
-        isEditing && "shadow bg-white",
+        isEditing && "bg-white shadow",
         !isSelected && !isEditing && "hover:bg-slate-100"
       )}
     >
       {isEditing && (
-        <div onClick={(e) => e.stopPropagation()}>
+        <div onClick={e => e.stopPropagation()}>
           <TaskForm
             onBackClick={resetTaskStates}
             isDeleteAvailable={task.id !== BLANK_TASK.id}
@@ -46,10 +45,10 @@ function TaskCard({
       )}
       {!isEditing && (
         <>
-          <Flex className="px-2 flex items-center gap-3">
-            <Checkbox onClick={(e) => e.stopPropagation()} size="2" />
+          <Flex className="flex items-center gap-3 px-2">
+            <Checkbox onClick={e => e.stopPropagation()} size="2" />
             <Box className="pr-10" width="100%" as="div">
-              <Text truncate as="p" weight="medium" className="text-base m-0">
+              <Text truncate as="p" weight="medium" className="m-0 text-base">
                 {task.title}
               </Text>
               {task.description && (
