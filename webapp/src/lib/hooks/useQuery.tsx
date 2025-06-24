@@ -25,7 +25,9 @@ export default function useQuery<D>(props: Props<D>): UseQuery {
       fn();
     } catch (err) {
       if (isAxiosError(err)) {
-        setError(err?.response?.data || "An error occurred when making request");
+        setError(
+          err?.response?.data || "An error occurred when making request"
+        );
       }
     } finally {
       setLoading(false);

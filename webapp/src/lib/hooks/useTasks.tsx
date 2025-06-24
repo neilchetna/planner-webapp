@@ -20,7 +20,12 @@ type UseTasks = {
 };
 
 export function useTasks({ id }: Props): UseTasks {
-  const { addBlankTask, updateTaskById, updateTask: updateStoreTask, removeTask } = usePlanStore();
+  const {
+    addBlankTask,
+    updateTaskById,
+    updateTask: updateStoreTask,
+    removeTask,
+  } = usePlanStore();
 
   const [selectedTaskId, setSelectedTaskId] = useState<string>();
   const [editingTaskId, setEditingTaskId] = useState<string>();

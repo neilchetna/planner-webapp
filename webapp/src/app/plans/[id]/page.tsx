@@ -1,5 +1,11 @@
 "use client";
-import { KeystrokeMap, useFetchPlan, useKeystroke, usePlans, useTasks } from "@/lib/hooks";
+import {
+  KeystrokeMap,
+  useFetchPlan,
+  useKeystroke,
+  usePlans,
+  useTasks,
+} from "@/lib/hooks";
 import { Task } from "@/models/task";
 import TaskCard from "@/ui/task/task-card";
 import { Box, Button, Container, Flex, Heading } from "@radix-ui/themes";
@@ -84,7 +90,7 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
           {loading ? (
             <>Loading</>
           ) : (
-            plan?.tasks?.map(task => (
+            plan?.tasks?.map((task) => (
               <Box
                 onDoubleClick={() => setEditingTask(task)}
                 onClick={() => handleTaskClick(task)}

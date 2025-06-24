@@ -23,12 +23,12 @@ type PlanStoreAction = {
 type PlanStore = PlanStoreState & PlanStoreAction;
 
 export const usePlanStore = create<PlanStore>()(
-  immer(set => ({
+  immer((set) => ({
     plans: [],
 
     setPlans: (plans: Plan[]) =>
-      set(state => {
-        state.plans = plans.map(p => {
+      set((state) => {
+        state.plans = plans.map((p) => {
           if (!p.icon) p.icon = "📋";
           if (!p.tasks) p.tasks = [];
 
@@ -37,8 +37,8 @@ export const usePlanStore = create<PlanStore>()(
       }),
 
     updatePlan: (plan: Plan) =>
-      set(state => {
-        const planIndex = state.plans.findIndex(p => p.id === plan.id);
+      set((state) => {
+        const planIndex = state.plans.findIndex((p) => p.id === plan.id);
         if (planIndex < 0) return;
 
         state.plans[planIndex] = { ...plan, ...state.plans[planIndex] };
@@ -47,52 +47,52 @@ export const usePlanStore = create<PlanStore>()(
       }),
 
     addNewPlan: (plan: Plan) =>
-      set(state => {
+      set((state) => {
         state.plans.push(plan);
       }),
 
     removePlan: (planId: string) => {
-      set(state => {
-        state.plans = state.plans.filter(p => p.id !== planId);
+      set((state) => {
+        state.plans = state.plans.filter((p) => p.id !== planId);
       });
     },
 
     addBlankTask: (planId: string) =>
-      set(state => {
-        const plan = state.plans.find(p => p.id === planId);
+      set((state) => {
+        const plan = state.plans.find((p) => p.id === planId);
         if (!plan) return;
 
         plan.tasks.push(BLANK_TASK);
       }),
 
     updateTask: (planId: string, task: Task) =>
-      set(state => {
-        const plan = state.plans.find(p => p.id === planId);
+      set((state) => {
+        const plan = state.plans.find((p) => p.id === planId);
         if (!plan) return;
 
-        const taskIndex = plan.tasks.findIndex(t => t.id === task.id);
+        const taskIndex = plan.tasks.findIndex((t) => t.id === task.id);
         if (taskIndex < 0) return;
 
         plan.tasks[taskIndex] = task;
       }),
 
     updateTaskById: (planId: string, taskId: string, task: Task) =>
-      set(state => {
-        const plan = state.plans.find(p => p.id === planId);
+      set((state) => {
+        const plan = state.plans.find((p) => p.id === planId);
         if (!plan) return;
 
-        const taskIndex = plan.tasks.findIndex(t => t.id === taskId);
+        const taskIndex = plan.tasks.findIndex((t) => t.id === taskId);
         if (taskIndex < 0) return;
 
         plan.tasks[taskIndex] = task;
       }),
 
     removeTask: (planId: string, taskId: string) =>
-      set(state => {
-        const plan = state.plans.find(p => p.id === planId);
+      set((state) => {
+        const plan = state.plans.find((p) => p.id === planId);
         if (!plan) return;
 
-        plan.tasks = plan.tasks.filter(t => t.id !== taskId);
+        plan.tasks = plan.tasks.filter((t) => t.id !== taskId);
       }),
   }))
 );
