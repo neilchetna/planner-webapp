@@ -10,16 +10,16 @@ type Action = {
   reset: () => void;
 };
 
-export const useKeystrokeStore = create<State & Action>(set => ({
+export const useKeystrokeStore = create<State & Action>((set) => ({
   pressedKeys: new Set(),
   keyDown: (key: string) =>
-    set(state => {
+    set((state) => {
       const newSet = new Set(state.pressedKeys);
       newSet.add(key);
       return { pressedKeys: newSet };
     }),
   keyUp: (key: string) => {
-    set(state => {
+    set((state) => {
       const newSet = new Set(state.pressedKeys);
       newSet.delete(key);
       return { pressedKeys: newSet };

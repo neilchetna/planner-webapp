@@ -12,7 +12,7 @@ type UseFetchPlan = {
 } & UseQuery;
 
 export function useFetchPlan({ id }: Props): UseFetchPlan {
-  const plan = usePlanStore(s => s.plans.find(p => String(p.id) === id));
+  const plan = usePlanStore((s) => s.plans.find((p) => String(p.id) === id));
   const { updatePlan } = usePlanStore();
   const { ...queryData } = useQuery<Plan>({
     queryFn: getPlan,
