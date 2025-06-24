@@ -13,7 +13,7 @@ export default function PlanTitle({ plan, onTitleSubmit }: Props) {
   const titleSchema = z
     .string()
     .nonempty()
-    .refine((val) => val !== plan.title); // Prevent network calls from the same title
+    .refine(val => val !== plan.title); // Prevent network calls from the same title
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const submitTitle = () => {
@@ -34,8 +34,8 @@ export default function PlanTitle({ plan, onTitleSubmit }: Props) {
     <form onSubmit={handleFormSubmit}>
       <GhostInput
         onBlur={() => submitTitle()}
-        onChange={(e) => setTextValue(e.target.value)}
-        className="text-3xl bg-transparent plan-title-input"
+        onChange={e => setTextValue(e.target.value)}
+        className="plan-title-input bg-transparent text-3xl"
         name="title"
         type="text"
         placeholder="Whats your plan?"
