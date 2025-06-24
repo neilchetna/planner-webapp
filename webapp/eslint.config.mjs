@@ -22,7 +22,7 @@ export default defineConfig([
   ...compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@next/next/recommended"
+    "plugin:@next/next/recommended" // TODO: Add prettier plugin and used eslint to check format in the CI
   ),
   {
     plugins: {

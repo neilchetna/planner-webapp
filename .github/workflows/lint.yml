@@ -1,13 +1,9 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# ESLint is a tool for identifying and reporting on patterns
-# found in ECMAScript/JavaScript code.
-# More details at https://github.com/eslint/eslint
-# and https://eslint.org
+# This workflow is to list using eslint and prettier
+# The following plugins are configured for each
+# eslint: typescript/recommended, next/recommended
+# prettier: tailwindcss/plugin
 
-name: ESLint
+name: Lint
 
 on:
   push:
@@ -20,11 +16,11 @@ on:
 
 jobs:
   eslint:
-    name: Run eslint scanning
+    name: Run lint and format scanning
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write
+      security-events: write # add result for the eslint to the sarif files
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     steps:
       - name: Checkout code
@@ -39,6 +35,8 @@ jobs:
           npm install @typescript-eslint/eslint-plugin@latest
           npm install @next/eslint-plugin-next@15.3.3
           npm install eslint-config-next@15.3.3
+          npm install prettier
+          npm install prettier-plugin-tailwindcss
         working-directory: "./webapp"
 
       - name: Run ESLint
@@ -51,3 +49,8 @@ jobs:
         with:
           sarif_file: eslint-results.sarif
           wait-for-processing: true
+          
+      - name: Run Prettier check
+        run: npm run format:ci
+        continue-on-error: false
+        working-directory: "./webapp"

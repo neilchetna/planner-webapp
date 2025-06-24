@@ -17,7 +17,7 @@ function PlansLayout({ children }: PlansLayoutProps) {
       <PanelResizeHandle />
       <Panel defaultSize={100 - 15} minSize={30}>
         <KeystrokeListener />
-        <div className="bg-slate-50 px-4 h-screen">{children}</div>
+        <div className="h-screen bg-slate-50 px-4">{children}</div>
       </Panel>
     </PanelGroup>
   );
