@@ -4,7 +4,7 @@ import { redirect, usePathname } from "next/navigation";
 import SidebarMenuItem from "./sidebar-menu-item";
 import { IconCalendar, IconLayoutKanban, IconProps, IconTargetArrow } from "@tabler/icons-react";
 import React, { ReactElement } from "react";
-import { usePlans , useFetchPlans } from "@/lib/hooks";
+import { usePlans, useFetchPlans } from "@/lib/hooks";
 import { BLANK_PLAN } from "@/lib/utils/const";
 
 export type NavigationItem = {
