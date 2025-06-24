@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 
-type UseQuery = {
+export type UseQuery = {
   loading: boolean;
   errorMessage: string;
 };
