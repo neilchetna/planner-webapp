@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { use } from "react";
 import PlanMenuDropdown from "./(components)/plan-menu-dropdown";
 import PlanTitle from "./(components)/plan-title";
+import { PlanUpdateDTO } from "@/lib/http";
 
 type Params = { id: string };
 
@@ -18,26 +19,20 @@ type PlansDetailPageProps = {
 function PlansDetailPage({ params }: PlansDetailPageProps) {
   const { id } = use<Params>(params);
   const { plan, loading } = useFetchPlan({ id });
-  const { updatePlanTitle, deletePlan } = usePlans();
+  const { updatePlan, deletePlan } = usePlans();
   const {
-    selectedTaskId,
-    editingTaskId,
-    selectTask,
+    toggleSelectTask,
     setEditingTask,
     addNewBlankTask,
     onTaskSubmit,
     resetTasks,
     deleteTask,
   } = useTasks({
-    id,
+    planId: id,
   });
 
   function handleTaskClick(task: Task) {
-    if (task.id === selectedTaskId) {
-      setEditingTask(task);
-    } else {
-      selectTask(task);
-    }
+    toggleSelectTask(task);
   }
 
   function handlePlanDelete() {
@@ -46,7 +41,8 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
   }
 
   function handleUpdatePlanTitle(title: string) {
-    updatePlanTitle(id, title);
+    const planData: PlanUpdateDTO = { title };
+    updatePlan(id, planData);
   }
 
   const cancelEditAndSelection: KeystrokeMap = {
@@ -73,7 +69,7 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
             className="cursor-pointer"
             color="green"
             variant="soft"
-            my="5"
+            my="6"
             size="2"
             radius="large"
             onClick={addNewBlankTask}
@@ -94,8 +90,6 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
                   resetTaskStates={resetTasks}
                   deleteTask={deleteTask}
                   onTaskSubmit={onTaskSubmit}
-                  isEditing={task.id === editingTaskId}
-                  isSelected={task.id === selectedTaskId}
                   task={task}
                 />
               </Box>

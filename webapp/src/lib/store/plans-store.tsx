@@ -18,6 +18,7 @@ type PlanStoreAction = {
   updateTaskById: (planId: string, taskId: string, task: Task) => void;
   removeTask: (planId: string, taskId: string) => void;
   updateTask: (planId: string, task: Task) => void;
+  resetTasks: (planId: string) => void;
 };
 
 type PlanStore = PlanStoreState & PlanStoreAction;
@@ -55,8 +56,8 @@ export const usePlanStore = create<PlanStore>()(
         const plan = state.plans.find(p => p.id === planId);
         if (!plan) return;
 
-        if (Array.isArray(plan)) {
-          plan.tasks.push(BLANK_TASK);
+        if (Array.isArray(plan.tasks)) {
+          plan.tasks = [...plan.tasks, BLANK_TASK];
         } else {
           plan.tasks = [BLANK_TASK];
         }
@@ -91,5 +92,14 @@ export const usePlanStore = create<PlanStore>()(
 
         plan.tasks = plan.tasks.filter(t => t.id !== taskId);
       }),
+
+    resetTasks: (planId: string) => {
+      set(state => {
+        const plan = state.plans.find(p => p.id === planId);
+        if (!plan) return;
+
+        plan.tasks = plan.tasks.map(t => ({ ...t, isSelected: false, isEditing: false }));
+      });
+    },
   }))
 );

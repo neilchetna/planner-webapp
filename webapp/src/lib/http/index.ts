@@ -1,2 +1,2 @@
-export { apiFactory as plansApiFactory } from "./plans.api";
-export { apiFactory as tasksApiFactory } from "./tasks.api";
+export * from "./plans";
+export * from "./tasks";

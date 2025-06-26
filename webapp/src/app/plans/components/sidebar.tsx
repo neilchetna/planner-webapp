@@ -115,7 +115,7 @@ function Sidebar() {
               </Flex>
               <ul>
                 {list.map(menuItem => (
-                  <li key={menuItem.name}>
+                  <li key={menuItem.pathname}>
                     <SidebarMenuItem
                       {...menuItem}
                       isActive={getRedirectionPath(menuItem.pathname) === pathname}
