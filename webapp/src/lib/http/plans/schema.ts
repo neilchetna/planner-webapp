@@ -13,5 +13,5 @@ export const PlanUpdateSchema = PlanCreateSchema.partial();
 
 export const PlanResponseSchema = BaseSchema.extend({
   ...PlanBaseSchema.shape,
-  tasks: z.array(TasksResponseSchema),
+  tasks: z.array(TasksResponseSchema).optional(),
 });
