@@ -1,4 +1,4 @@
-import { Task, TaskDTO, TaskDTOSchema } from "@/models";
+import { Task } from "@/models";
 import { Button, Checkbox, Flex } from "@radix-ui/themes";
 import {
   IconArrowLeft,
@@ -9,11 +9,12 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import GhostInput from "../ghost-input/ghost-input";
+import { TaskCreateDTO, TasksCreateSchema } from "@/lib/http";
 
 type TaskFormProps = {
   task: Task;
   isDeleteAvailable: boolean;
-  onTaskSubmit(task: TaskDTO): Promise<void>;
+  onTaskSubmit(task: TaskCreateDTO): Promise<void>;
   onTaskDelete(): void;
   onBackClick(): void;
 };
@@ -31,7 +32,7 @@ function TaskForm({
     const data = Object.fromEntries(formData);
 
     // Validate Schema
-    const res = TaskDTOSchema.safeParse(data);
+    const res = TasksCreateSchema.safeParse(data);
 
     if (res.success) {
       await onTaskSubmit(res.data);

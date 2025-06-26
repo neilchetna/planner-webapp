@@ -1,47 +1,51 @@
 import { tasksApiFactory } from "@/lib/http";
-import { Task, TaskDTO } from "@/models";
-import { useState } from "react";
+import { Task } from "@/models";
+import { TaskCreateDTO, TaskUpdateDTO } from "../http";
 import { usePlanStore } from "../store";
 import { BLANK_TASK } from "../utils/const";
 
 type Props = {
-  id: string;
+  planId: string;
 };
 
 type UseTasks = {
-  selectedTaskId?: string;
-  editingTaskId?: string;
-  selectTask: (task: Task) => void;
+  toggleSelectTask: (task: Task) => void;
   setEditingTask: (task: Task) => void;
   addNewBlankTask: () => void;
-  onTaskSubmit: (taskId: string, task: TaskDTO) => Promise<void>;
+  onTaskSubmit: (taskId: string, task: TaskCreateDTO) => Promise<void>;
   deleteTask: (taskId: string) => Promise<void>;
   resetTasks: () => void;
+  updateTask: (taskId: string, task: TaskUpdateDTO) => Promise<void>;
 };
 
-export function useTasks({ id }: Props): UseTasks {
-  const { addBlankTask, updateTaskById, updateTask: updateStoreTask, removeTask } = usePlanStore();
-
-  const [selectedTaskId, setSelectedTaskId] = useState<string>();
-  const [editingTaskId, setEditingTaskId] = useState<string>();
-
+export function useTasks({ planId }: Props): UseTasks {
+  const {
+    addBlankTask,
+    updateTaskById,
+    updateTask: updateTaskState,
+    removeTask,
+    resetTasks: resetTasksState,
+  } = usePlanStore();
   const taskApi = tasksApiFactory();
 
-  function selectTask(task: Task) {
-    removeTask(id, BLANK_TASK.id);
-    setSelectedTaskId(task.id);
+  function toggleSelectTask(task: Task) {
+    removeTask(planId, BLANK_TASK.id);
+    const updatedTask: Task = { ...task, isSelected: !task.isSelected };
+    updateTaskState(planId, updatedTask);
   }
 
   function setEditingTask(task: Task) {
-    setEditingTaskId(task.id);
+    resetTasksState(planId);
+    updateTaskState(planId, { ...task, isEditing: true });
   }
 
   function addNewBlankTask() {
-    addBlankTask(id);
+    removeTask(planId, BLANK_TASK.id);
+    addBlankTask(planId);
     setEditingTask(BLANK_TASK);
   }
 
-  async function onTaskSubmit(taskId: string, task: TaskDTO) {
+  async function onTaskSubmit(taskId: string, task: TaskUpdateDTO) {
     if (taskId === BLANK_TASK.id) {
       return await createNewTask(task);
     }
@@ -49,36 +53,35 @@ export function useTasks({ id }: Props): UseTasks {
     return await updateTask(taskId, task);
   }
 
-  async function createNewTask(task: TaskDTO) {
-    const res = await taskApi.postTask(id, task);
-    updateTaskById(id, BLANK_TASK.id, res);
+  async function createNewTask(task: TaskCreateDTO) {
+    const res = await taskApi.postTask(planId, task);
+    updateTaskById(planId, BLANK_TASK.id, res);
     resetTasks();
   }
 
-  async function updateTask(taskId: string, task: TaskDTO) {
-    const res = await taskApi.patchTask(id, taskId, task);
-    updateStoreTask(id, res);
+  async function updateTask(taskId: string, task: TaskUpdateDTO) {
+    const res = await taskApi.patchTask(planId, taskId, task);
+    updateTaskState(planId, res);
     resetTasks();
   }
 
   async function deleteTask(taskId: string) {
-    await taskApi.deleteTask(id, taskId);
-    removeTask(id, taskId);
+    await taskApi.deleteTask(planId, taskId);
+    removeTask(planId, taskId);
   }
+
   function resetTasks() {
-    setEditingTaskId("");
-    setSelectedTaskId("");
-    removeTask(id, BLANK_TASK.id);
+    resetTasksState(planId);
+    removeTask(planId, BLANK_TASK.id);
   }
 
   return {
-    selectedTaskId,
-    editingTaskId,
     setEditingTask,
-    selectTask,
+    toggleSelectTask,
     addNewBlankTask,
     onTaskSubmit,
     resetTasks,
     deleteTask,
+    updateTask,
   };
 }

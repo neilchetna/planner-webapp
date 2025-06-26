@@ -1,20 +1,20 @@
-import { plansApiFactory } from "@/lib/http";
+import { PlanCreateDTO, plansApiFactory, PlanUpdateDTO } from "@/lib/http";
 import { usePlanStore } from "@/lib/store";
-import { Plan, PlanDTO } from "@/models";
+import { Plan } from "@/models";
 
 type UsePlan = {
   plans: Plan[];
-  createPlan: (plan: PlanDTO) => Promise<Plan>;
+  createPlan: (plan: PlanCreateDTO) => Promise<Plan>;
   deletePlan: (planId: string) => Promise<void>;
-  updatePlanTitle: (planId: string, title: string) => Promise<void>;
+  updatePlan: (planId: string, plan: PlanUpdateDTO) => Promise<void>;
 };
 
 export function usePlans(): UsePlan {
-  const { plans, addNewPlan, removePlan, updatePlan } = usePlanStore();
+  const { plans, addNewPlan, removePlan, updatePlan: updatePlanState } = usePlanStore();
 
   const plansApi = plansApiFactory();
 
-  async function createPlan(plan: PlanDTO) {
+  async function createPlan(plan: PlanCreateDTO) {
     const res = await plansApi.postPlan(plan);
     addNewPlan(res);
     return res;
@@ -25,10 +25,10 @@ export function usePlans(): UsePlan {
     removePlan(planId);
   }
 
-  async function updatePlanTitle(planId: string, title: string) {
-    const res = await plansApi.patchPlan(planId, { title });
-    updatePlan(res);
+  async function updatePlan(planId: string, plan: PlanUpdateDTO) {
+    const res = await plansApi.patchPlan(planId, plan);
+    updatePlanState(res);
   }
 
-  return { plans, createPlan, deletePlan, updatePlanTitle };
+  return { plans, createPlan, deletePlan, updatePlan };
 }
