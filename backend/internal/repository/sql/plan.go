@@ -29,7 +29,7 @@ func (m *PlanRepository) Create(ctx context.Context, plan *models.Plan) error {
 
 func (m *PlanRepository) Query(ctx context.Context, limit int) ([]models.Plan, error) {
 	var plans []models.Plan
-	result := m.db.WithContext(ctx).Preload("Tasks").Limit(limit).Find(&plans)
+	result := m.db.WithContext(ctx).Limit(limit).Find(&plans)
 	if result.Error != nil {
 		return nil, result.Error
 	}

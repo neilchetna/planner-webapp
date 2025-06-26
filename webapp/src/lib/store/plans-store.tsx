@@ -66,7 +66,7 @@ export const usePlanStore = create<PlanStore>()(
     updateTask: (planId: string, task: Task) =>
       set(state => {
         const plan = state.plans.find(p => p.id === planId);
-        if (!plan) return;
+        if (!plan || !plan.tasks) return;
 
         const taskIndex = plan.tasks.findIndex(t => t.id === task.id);
         if (taskIndex < 0) return;
@@ -77,7 +77,7 @@ export const usePlanStore = create<PlanStore>()(
     updateTaskById: (planId: string, taskId: string, task: Task) =>
       set(state => {
         const plan = state.plans.find(p => p.id === planId);
-        if (!plan) return;
+        if (!plan || !plan.tasks) return;
 
         const taskIndex = plan.tasks.findIndex(t => t.id === taskId);
         if (taskIndex < 0) return;
@@ -88,7 +88,7 @@ export const usePlanStore = create<PlanStore>()(
     removeTask: (planId: string, taskId: string) =>
       set(state => {
         const plan = state.plans.find(p => p.id === planId);
-        if (!plan) return;
+        if (!plan || !plan.tasks) return;
 
         plan.tasks = plan.tasks.filter(t => t.id !== taskId);
       }),
@@ -96,7 +96,7 @@ export const usePlanStore = create<PlanStore>()(
     resetTasks: (planId: string) => {
       set(state => {
         const plan = state.plans.find(p => p.id === planId);
-        if (!plan) return;
+        if (!plan || !plan.tasks) return;
 
         plan.tasks = plan.tasks.map(t => ({ ...t, isSelected: false, isEditing: false }));
       });
