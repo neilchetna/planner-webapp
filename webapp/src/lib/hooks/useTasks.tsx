@@ -1,6 +1,6 @@
 import { tasksApiFactory } from "@/lib/http";
 import { Task } from "@/models";
-import { TaskCreateDTO, TaskUpdateDTO } from "../http/tasks/dto";
+import { TaskCreateDTO, TaskUpdateDTO } from "../http";
 import { usePlanStore } from "../store";
 import { BLANK_TASK } from "../utils/const";
 

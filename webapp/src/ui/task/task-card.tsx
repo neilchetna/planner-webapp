@@ -1,4 +1,4 @@
-import { TaskCreateDTO } from "@/lib/http/tasks/dto";
+import { TaskCreateDTO } from "@/lib/http";
 import { BLANK_TASK } from "@/lib/utils/const";
 import { Task } from "@/models";
 import { Box, Checkbox, Flex, Text } from "@radix-ui/themes";
