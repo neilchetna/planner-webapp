@@ -28,12 +28,7 @@ export const usePlanStore = create<PlanStore>()(
 
     setPlans: (plans: Plan[]) =>
       set(state => {
-        state.plans = plans.map(p => {
-          if (!p.icon) p.icon = "📋";
-          if (!p.tasks) p.tasks = [];
-
-          return p;
-        });
+        state.plans = plans;
       }),
 
     updatePlan: (plan: Plan) =>
@@ -41,9 +36,7 @@ export const usePlanStore = create<PlanStore>()(
         const planIndex = state.plans.findIndex(p => p.id === plan.id);
         if (planIndex < 0) return;
 
-        state.plans[planIndex] = { ...plan, ...state.plans[planIndex] };
-
-        if (!state.plans[planIndex].icon) state.plans[planIndex].icon = "📋";
+        state.plans[planIndex] = { ...state.plans[planIndex], ...plan };
       }),
 
     addNewPlan: (plan: Plan) =>
@@ -62,7 +55,11 @@ export const usePlanStore = create<PlanStore>()(
         const plan = state.plans.find(p => p.id === planId);
         if (!plan) return;
 
-        plan.tasks.push(BLANK_TASK);
+        if (Array.isArray(plan)) {
+          plan.tasks.push(BLANK_TASK);
+        } else {
+          plan.tasks = [BLANK_TASK];
+        }
       }),
 
     updateTask: (planId: string, task: Task) =>

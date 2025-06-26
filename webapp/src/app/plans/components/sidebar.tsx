@@ -56,7 +56,7 @@ function Sidebar() {
   const plansList = plans?.map(plan => ({
     name: plan.title,
     title: plan.title,
-    icon: plan.icon,
+    icon: plan.icon || "📋",
     pathname: plan.id,
   }));
 

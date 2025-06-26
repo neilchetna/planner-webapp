@@ -66,7 +66,7 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
       {plan && (
         <Container p="3" size="3">
           <Heading className="flex gap-2" as="h1">
-            {plan.icon}
+            {plan.icon || "📋"}
             <PlanTitle plan={plan} onTitleSubmit={handleUpdatePlanTitle} />
           </Heading>
           <Button
