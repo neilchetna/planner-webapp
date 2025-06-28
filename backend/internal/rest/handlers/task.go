@@ -14,13 +14,7 @@ import (
 type TaskService interface {
 	Create(ctx context.Context, task *models.Task) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	Update(ctx context.Context, task *models.Task) error
-}
-
-type TaskDTO struct {
-	Title       string `json:"title" validate:"required"`
-	Description string `json:"description"`
-	DueDate     string `json:"dueDate"`
+	Update(ctx context.Context, taskID uuid.UUID, taskInput *models.UpdateTaskInput) (*models.Task, error)
 }
 
 type TaskHandler struct {
@@ -94,16 +88,18 @@ func (a *TaskHandler) Update(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid task ID")
 	}
 
-	var task models.Task
-	task.ID = taskId
-	err = c.Bind(&task)
+	var input models.UpdateTaskInput
+	err = c.Bind(&input)
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
 	ctx := c.Request().Context()
-	err = a.Service.Update(ctx, &task)
+	task, err := a.Service.Update(ctx, taskId, &input)
 	if err != nil {
+		if err == models.ErrNotFound {
+			return c.JSON(http.StatusNotFound, err.Error())
+		}
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 

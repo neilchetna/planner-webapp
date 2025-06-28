@@ -23,11 +23,6 @@ type PlanService interface {
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
-type PlanDTO struct {
-	Title string `json:"title" validate:"required"`
-	Icon  string `json:"icon"`
-}
-
 type PlanHandler struct {
 	Service PlanService
 }

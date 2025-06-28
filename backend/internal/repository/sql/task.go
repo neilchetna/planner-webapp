@@ -48,3 +48,15 @@ func (m *TaskRepository) Update(ctx context.Context, task *models.Task) error {
 
 	return nil
 }
+
+func (m *TaskRepository) GetByID(ctx context.Context, id uuid.UUID) (models.Task, error) {
+	var task models.Task
+
+	res := m.db.WithContext(ctx).First(&task, "id = ?", id)
+
+	if res.Error != nil {
+		return task, res.Error
+	}
+
+	return task, nil
+}

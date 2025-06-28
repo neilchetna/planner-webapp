@@ -1,4 +1,5 @@
-import { Task } from "@/models";
+import { BLANK_TASK } from "@/lib/utils/const";
+import { Task, TaskCreate, TaskCreateInput, TaskUpdate, TaskUpdateInput } from "@/models";
 import { Button, Checkbox, Flex } from "@radix-ui/themes";
 import {
   IconArrowLeft,
@@ -8,13 +9,13 @@ import {
   IconTargetArrow,
   IconTrash,
 } from "@tabler/icons-react";
+import { useState } from "react";
 import GhostInput from "../ghost-input/ghost-input";
-import { TaskCreateDTO, TasksCreateSchema } from "@/lib/http";
 
 type TaskFormProps = {
   task: Task;
   isDeleteAvailable: boolean;
-  onTaskSubmit(task: TaskCreateDTO): Promise<void>;
+  onTaskSubmit(task: TaskCreate | TaskUpdate): void;
   onTaskDelete(): void;
   onBackClick(): void;
 };
@@ -26,13 +27,19 @@ function TaskForm({
   onTaskDelete,
   onBackClick,
 }: TaskFormProps) {
+  const [status, setStatus] = useState(task.isCompleted);
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
 
     // Validate Schema
-    const res = TasksCreateSchema.safeParse(data);
+    let res;
+    if (task.id === BLANK_TASK.id) {
+      res = TaskCreateInput.safeParse(data);
+    } else {
+      res = TaskUpdateInput.safeParse(data);
+    }
 
     if (res.success) {
       await onTaskSubmit(res.data);
@@ -55,7 +62,14 @@ function TaskForm({
         </Button>
       </Flex>
       <Flex className="mb-5 gap-3" align="center">
-        <Checkbox className="mt-2 self-start" />
+        <Checkbox
+          checked={status}
+          onClick={e => {
+            e.stopPropagation();
+            setStatus(state => !state);
+          }}
+          className="mt-2 self-start"
+        />
         <div className="w-full">
           <GhostInput
             name="title"

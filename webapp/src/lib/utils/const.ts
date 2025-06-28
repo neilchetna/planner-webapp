@@ -7,6 +7,7 @@ export const BLANK_TASK: Task = {
   title: "",
   loading: false,
   error: "",
+  isCompleted: false,
 };
 
 export const BLANK_PLAN: PlanCreateDTO = {

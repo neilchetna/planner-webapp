@@ -1,6 +1,5 @@
 import { tasksApiFactory } from "@/lib/http";
-import { Task } from "@/models";
-import { TaskCreateDTO, TaskUpdateDTO } from "../http";
+import { Task, TaskCreate, TaskUpdate } from "@/models";
 import { usePlanStore } from "../store";
 import { BLANK_TASK } from "../utils/const";
 
@@ -12,10 +11,10 @@ type UseTasks = {
   toggleSelectTask: (task: Task) => void;
   setEditingTask: (task: Task) => void;
   addNewBlankTask: () => void;
-  onTaskSubmit: (taskId: string, task: TaskCreateDTO) => Promise<void>;
   deleteTask: (taskId: string) => Promise<void>;
   resetTasks: () => void;
-  updateTask: (taskId: string, task: TaskUpdateDTO) => Promise<void>;
+  createNewTask: (task: TaskCreate) => Promise<void>;
+  updateTask: (taskId: string, task: TaskUpdate) => Promise<void>;
 };
 
 export function useTasks({ planId }: Props): UseTasks {
@@ -45,21 +44,13 @@ export function useTasks({ planId }: Props): UseTasks {
     setEditingTask(BLANK_TASK);
   }
 
-  async function onTaskSubmit(taskId: string, task: TaskUpdateDTO) {
-    if (taskId === BLANK_TASK.id) {
-      return await createNewTask(task);
-    }
-
-    return await updateTask(taskId, task);
-  }
-
-  async function createNewTask(task: TaskCreateDTO) {
+  async function createNewTask(task: TaskCreate) {
     const res = await taskApi.postTask(planId, task);
     updateTaskById(planId, BLANK_TASK.id, res);
     resetTasks();
   }
 
-  async function updateTask(taskId: string, task: TaskUpdateDTO) {
+  async function updateTask(taskId: string, task: TaskUpdate) {
     const res = await taskApi.patchTask(planId, taskId, task);
     updateTaskState(planId, res);
     resetTasks();
@@ -79,7 +70,7 @@ export function useTasks({ planId }: Props): UseTasks {
     setEditingTask,
     toggleSelectTask,
     addNewBlankTask,
-    onTaskSubmit,
+    createNewTask,
     resetTasks,
     deleteTask,
     updateTask,
