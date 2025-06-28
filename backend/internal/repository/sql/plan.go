@@ -3,7 +3,6 @@ package sqlrepository
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/neilchetna/planner-webapp/backend/models"
@@ -52,7 +51,6 @@ func (m *PlanRepository) Update(ctx context.Context, plan *models.Plan) error {
 func (m *PlanRepository) Get(ctx context.Context, id uuid.UUID) (models.Plan, error) {
 	var plan models.Plan
 	result := m.db.WithContext(ctx).Preload("Tasks").First(&plan, "id = ?", id)
-	fmt.Println(result.Error)
 	if result.Error != nil {
 		return plan, result.Error
 	}
