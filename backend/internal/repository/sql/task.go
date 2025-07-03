@@ -39,7 +39,7 @@ func (m *TaskRepository) Delete(ctx context.Context, id uuid.UUID) error {
 
 func (m *TaskRepository) Update(ctx context.Context, task *models.Task) error {
 	if task.ID == uuid.Nil {
-		return errors.New("task id not found")
+		return errors.New("task's 'id' is not valid")
 	}
 	res := m.db.WithContext(ctx).Model(&models.Task{}).Where("id = ?", task.ID).Omit("ID").Updates(task)
 	if res.Error != nil {

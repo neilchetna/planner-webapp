@@ -1,11 +1,11 @@
 "use client";
-import { Box, Button, Flex, Text } from "@radix-ui/themes";
-import { redirect, usePathname } from "next/navigation";
-import SidebarMenuItem from "./sidebar-menu-item";
-import { IconCalendar, IconLayoutKanban, IconProps, IconTargetArrow } from "@tabler/icons-react";
-import React, { ReactElement } from "react";
-import { usePlans, useFetchPlans } from "@/lib/hooks";
+import { usePlans } from "@/lib/hooks";
 import { BLANK_PLAN } from "@/lib/utils/const";
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
+import { IconCalendar, IconLayoutKanban, IconProps, IconTargetArrow } from "@tabler/icons-react";
+import { redirect, usePathname } from "next/navigation";
+import React, { ReactElement } from "react";
+import SidebarMenuItem from "./sidebar-menu-item";
 
 export type NavigationItem = {
   name: string;
@@ -50,8 +50,7 @@ const activityItems: NavigationList = {
 
 function Sidebar() {
   const pathname = usePathname();
-  const { plans } = useFetchPlans();
-  const { createPlan } = usePlans();
+  const { createPlan, plans } = usePlans();
 
   const plansList = plans?.map(plan => ({
     name: plan.title,

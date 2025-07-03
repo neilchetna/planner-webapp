@@ -1,13 +1,5 @@
 import { Button, DropdownMenu } from "@radix-ui/themes";
-import {
-  IconArchive,
-  IconDots,
-  IconEdit,
-  IconLink,
-  IconTrash,
-  IconUpload,
-  IconProps,
-} from "@tabler/icons-react";
+import { IconDots, IconProps, IconTrash } from "@tabler/icons-react";
 import { cloneElement, Fragment, ReactElement } from "react";
 
 type MenuItem = {
@@ -24,24 +16,6 @@ type Props = {
 
 function PlanMenuDropdown({ onPlanDelete }: Props) {
   const menuItems: MenuItem[] = [
-    {
-      label: "Edit plan",
-      icon: <IconEdit />,
-      separator: true,
-    },
-    {
-      label: "Share",
-      icon: <IconLink />,
-    },
-    {
-      label: "Export",
-      icon: <IconUpload />,
-      separator: true,
-    },
-    {
-      label: "Archive",
-      icon: <IconArchive />,
-    },
     {
       label: "Delete plan",
       icon: <IconTrash />,

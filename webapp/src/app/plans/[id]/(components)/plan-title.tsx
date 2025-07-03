@@ -35,7 +35,7 @@ export default function PlanTitle({ plan, onTitleSubmit }: Props) {
       <GhostInput
         onBlur={() => submitTitle()}
         onChange={e => setTextValue(e.target.value)}
-        className="plan-title-input bg-transparent text-3xl"
+        className="plan-title-input h-fit bg-transparent text-3xl"
         name="title"
         type="text"
         placeholder="Whats your plan?"

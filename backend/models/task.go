@@ -24,7 +24,7 @@ type Task struct {
 }
 
 type UpdateTaskInput struct {
-	Title       *string `json:"title" validate:"required"`
+	Title       *string `json:"title"`
 	Description *string `json:"description"`
 	Status      *Status `json:"status"`
 }
