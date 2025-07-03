@@ -4,12 +4,13 @@ import { PlanUpdateDTO } from "@/lib/http";
 import { BLANK_TASK } from "@/lib/utils/const";
 import { Task, TaskCreate, TaskUpdate } from "@/models/task";
 import TaskCard from "@/ui/task/task-card";
-import { Box, Button, Container, Flex, Heading } from "@radix-ui/themes";
+import { Box, Button, Container, Flex, Heading, Skeleton } from "@radix-ui/themes";
 import { IconPlaylistAdd } from "@tabler/icons-react";
 import { redirect } from "next/navigation";
 import { use } from "react";
 import PlanMenuDropdown from "./(components)/plan-menu-dropdown";
 import PlanTitle from "./(components)/plan-title";
+import IconPicker from "./(components)/icon-picker";
 
 type Params = { id: string };
 
@@ -47,6 +48,11 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
     updatePlan(id, planData);
   }
 
+  function handleUpdatePlanIcon(icon: string) {
+    const planData: PlanUpdateDTO = { icon };
+    updatePlan(id, planData);
+  }
+
   function handleUpdateTaskStatus(taskId: string, status: boolean) {
     const taskData: Partial<Task> = { isCompleted: status };
     updateTask(taskId, taskData);
@@ -76,14 +82,16 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
       </Flex>
       {plan && (
         <Container p="3" size="3">
-          <Heading className="flex gap-2" as="h1">
-            {plan.icon || "📋"}
-            <PlanTitle plan={plan} onTitleSubmit={handleUpdatePlanTitle} />
-          </Heading>
+          <Skeleton loading={loading}>
+            <Heading className="flex items-center gap-6" as="h1">
+              <IconPicker onIconSelect={handleUpdatePlanIcon} currentIcon={plan.icon || "📋"} />
+              <PlanTitle plan={plan} onTitleSubmit={handleUpdatePlanTitle} />
+            </Heading>
+          </Skeleton>
           <Button
             className="cursor-pointer"
             color="green"
-            variant="soft"
+            variant="ghost"
             my="6"
             size="2"
             radius="large"
@@ -92,25 +100,22 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
             <IconPlaylistAdd size={20} />
             Add Task
           </Button>
-          {loading ? (
-            <>Loading</>
-          ) : (
-            plan?.tasks?.map(task => (
-              <Box
-                onDoubleClick={() => setEditingTask(task)}
-                onClick={() => handleTaskClick(task)}
-                key={task.id}
-              >
-                <TaskCard
-                  onStatusChange={handleUpdateTaskStatus}
-                  resetTaskStates={resetTasks}
-                  deleteTask={deleteTask}
-                  onTaskSubmit={handleOnSubmitTask}
-                  task={task}
-                />
-              </Box>
-            ))
-          )}
+          {loading && new Array(4).fill(null).map((_, i) => <Skeleton loading key={i} />)}
+          {plan?.tasks?.map(task => (
+            <Box
+              key={task.id}
+              onDoubleClick={() => setEditingTask(task)}
+              onClick={() => handleTaskClick(task)}
+            >
+              <TaskCard
+                onStatusChange={handleUpdateTaskStatus}
+                resetTaskStates={resetTasks}
+                deleteTask={deleteTask}
+                onTaskSubmit={handleOnSubmitTask}
+                task={task}
+              />
+            </Box>
+          ))}
         </Container>
       )}
     </>

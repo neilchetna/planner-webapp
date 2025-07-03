@@ -37,7 +37,7 @@ func (m *PlanRepository) Query(ctx context.Context, limit int) ([]models.Plan, e
 
 func (m *PlanRepository) Update(ctx context.Context, plan *models.Plan) error {
 	if plan.ID == uuid.Nil {
-		return errors.New("plan id not found")
+		return errors.New("plan's 'id' is not valid")
 	}
 
 	result := m.db.Model(&models.Plan{}).Where("id = ?", plan.ID).Omit("ID").Updates(plan)

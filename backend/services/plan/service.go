@@ -67,6 +67,24 @@ func (p *Service) Delete(ctx context.Context, id uuid.UUID) error {
 	return p.planRepo.Delete(ctx, id)
 }
 
-func (p *Service) Update(ctx context.Context, plan *models.Plan) error {
-	return p.planRepo.Update(ctx, plan)
+func (p *Service) Update(ctx context.Context, id uuid.UUID, planInput *models.UpdatePlanInput) (*models.Plan, error) {
+	plan, err := p.planRepo.Get(ctx, id)
+	if err != nil {
+		return nil, models.ErrNotFound
+	}
+
+	if planInput.Title != nil {
+		plan.Title = *planInput.Title
+	}
+
+	if planInput.Icon != nil {
+		plan.Icon = *planInput.Icon
+	}
+
+	err = p.planRepo.Update(ctx, &plan)
+	if err != nil {
+		return nil, err
+	}
+
+	return &plan, nil
 }

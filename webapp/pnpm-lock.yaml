@@ -33,6 +33,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      frimousse:
+        specifier: ^0.2.0
+        version: 0.2.0(react@19.1.0)
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -1932,6 +1935,11 @@ packages:
   form-data@4.0.3:
     resolution: {integrity: sha512-qsITQPfmvMOSAdeyZ+12I1c+CKSstAFAwu+97zrnWAbIr5u8wfsExUzCesVLC8NgHuRUqNN4Zy6UPWUTRGslcA==}
     engines: {node: '>= 6'}
+
+  frimousse@0.2.0:
+    resolution: {integrity: sha512-viSrsVQWKR4Q7xzC0lkx3Wu9i1+IHrth0QXn0nlIIJXpltwUnjkGXSTuoW7WHI5aJ4z49WR8E/pyQizFjlNtTA==}
+    peerDependencies:
+      react: ^18 || ^19
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
@@ -5118,6 +5126,10 @@ snapshots:
       es-set-tostringtag: 2.1.0
       hasown: 2.0.2
       mime-types: 2.1.35
+
+  frimousse@0.2.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   fs.realpath@1.0.0: {}
 

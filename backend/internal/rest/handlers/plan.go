@@ -18,7 +18,7 @@ import (
 type PlanService interface {
 	Create(ctx context.Context, plan *models.Plan) error
 	Query(ctx context.Context, limit int) ([]models.Plan, error)
-	Update(ctx context.Context, plan *models.Plan) error
+	Update(ctx context.Context, id uuid.UUID, plan *models.UpdatePlanInput) (*models.Plan, error)
 	Get(ctx context.Context, id uuid.UUID) (models.Plan, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 }
@@ -73,19 +73,21 @@ func (a *PlanHandler) Create(c echo.Context) error {
 func (a *PlanHandler) Update(c echo.Context) error {
 	planId, err := utils.ParseIDParam(c, "id")
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid plan ID ")
+		return c.JSON(http.StatusBadRequest, "plan's 'id' is not valid")
 	}
 
-	var plan models.Plan
-	plan.ID = planId
+	var planInput models.UpdatePlanInput
 
-	err = c.Bind(&plan)
+	err = c.Bind(&planInput)
 	if err != nil {
+		if err.Error() == models.ErrNotFound.Error() {
+			return c.JSON(http.StatusNotFound, err.Error())
+		}
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
 	ctx := c.Request().Context()
-	err = a.Service.Update(ctx, &plan)
+	plan, err := a.Service.Update(ctx, planId, &planInput)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
