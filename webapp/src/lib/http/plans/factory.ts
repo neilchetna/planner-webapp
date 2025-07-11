@@ -1,10 +1,11 @@
 import { Plan } from "@/models";
-import http from "../api";
-import { PlanCreateDTO, PlanResponseDTO, PlanUpdateDTO } from "./dto";
 import { AxiosResponse } from "axios";
+import { useApi } from "../api";
+import { PlanCreateDTO, PlanResponseDTO, PlanUpdateDTO } from "./dto";
 import { planToVM } from "./transformer";
 
 export const apiFactory = () => {
+  const http = useApi();
   const transformPlanDTO2VM = (res: AxiosResponse<PlanResponseDTO>) => planToVM(res.data);
   const transformPlansDTO2VM = (res: AxiosResponse<PlanResponseDTO[]>) => res.data.map(planToVM);
 

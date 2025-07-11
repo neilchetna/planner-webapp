@@ -17,7 +17,7 @@ import (
 
 type PlanService interface {
 	Create(ctx context.Context, plan *models.Plan) error
-	Query(ctx context.Context, limit int) ([]models.Plan, error)
+	Query(ctx context.Context, limit int, userId uuid.UUID) ([]models.Plan, error)
 	Update(ctx context.Context, id uuid.UUID, plan *models.UpdatePlanInput) (*models.Plan, error)
 	Get(ctx context.Context, id uuid.UUID) (models.Plan, error)
 	Delete(ctx context.Context, id uuid.UUID) error
@@ -56,6 +56,9 @@ func (a *PlanHandler) Create(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
 	}
 
+	user := c.Get("user").(*models.User)
+	plan.UserId = user.ID
+
 	var ok bool
 	if ok, err = validatePlan(&plan); !ok {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -89,7 +92,7 @@ func (a *PlanHandler) Update(c echo.Context) error {
 	ctx := c.Request().Context()
 	plan, err := a.Service.Update(ctx, planId, &planInput)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, plan)
@@ -102,8 +105,8 @@ func (a *PlanHandler) Get(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	var plan models.Plan
-	plan, err = a.Service.Get(ctx, planId)
+
+	plan, err := a.Service.Get(ctx, planId)
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, "Plan not found")
@@ -123,7 +126,9 @@ func (a *PlanHandler) Query(c echo.Context) error {
 
 	ctx := c.Request().Context()
 	var plans []models.Plan
-	plans, err = a.Service.Query(ctx, int(limit))
+	user := c.Get(utils.User).(*models.User)
+
+	plans, err = a.Service.Query(ctx, int(limit), user.ID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

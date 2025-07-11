@@ -11,10 +11,13 @@ import (
 )
 
 func BuildRoutes(e *echo.Echo, db *gorm.DB) {
-	bindMiddlewares(e)
+	bindMiddlewares(e, db)
 
 	// Root
 	e.GET("/", handlers.RootHandler)
+
+	// User
+	// userGroup := e.Group("/user")
 
 	// Plan
 	planGroup := e.Group("/plan")
@@ -30,7 +33,8 @@ func BuildRoutes(e *echo.Echo, db *gorm.DB) {
 
 }
 
-func bindMiddlewares(e *echo.Echo) {
-	// e.Use(middleware.Authenticate)
-	e.Use(middleware.CORS)
+func bindMiddlewares(e *echo.Echo, db *gorm.DB) {
+	e.Use(middleware.CORS())
+	e.Use(middleware.Authenticate)
+	e.Use(middleware.SyncUser(db))
 }

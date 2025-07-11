@@ -26,9 +26,9 @@ func (m *PlanRepository) Create(ctx context.Context, plan *models.Plan) error {
 	return nil
 }
 
-func (m *PlanRepository) Query(ctx context.Context, limit int) ([]models.Plan, error) {
+func (m *PlanRepository) Query(ctx context.Context, limit int, userID uuid.UUID) ([]models.Plan, error) {
 	var plans []models.Plan
-	result := m.db.WithContext(ctx).Limit(limit).Find(&plans)
+	result := m.db.WithContext(ctx).Limit(limit).Where("user_id = ?", userID).Find(&plans)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -40,7 +40,7 @@ func (m *PlanRepository) Update(ctx context.Context, plan *models.Plan) error {
 		return errors.New("plan's 'id' is not valid")
 	}
 
-	result := m.db.Model(&models.Plan{}).Where("id = ?", plan.ID).Omit("ID").Updates(plan)
+	result := m.db.WithContext(ctx).Model(&plan).Select("Title", "Icon").Updates(plan)
 	if result.Error != nil {
 		return result.Error
 	}

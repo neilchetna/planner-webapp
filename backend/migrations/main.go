@@ -34,8 +34,9 @@ func main() {
 
 	var plan models.Plan
 	var task models.Task
+	var user models.User
 
-	err = migrator.AutoMigrate(&plan, &task)
+	err = migrator.AutoMigrate(&plan, &task, &user)
 	if err != nil {
 		log.Fatalf("error migrating data: %v", err)
 	}
