@@ -2,7 +2,6 @@ package plan
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/neilchetna/planner-webapp/backend/models"
@@ -10,7 +9,7 @@ import (
 
 type PlanRepository interface {
 	Create(ctx context.Context, plan *models.Plan) error
-	Query(ctx context.Context, limit int) ([]models.Plan, error)
+	Query(ctx context.Context, limit int, userID uuid.UUID) ([]models.Plan, error)
 	Update(ctx context.Context, plan *models.Plan) error
 	Get(ctx context.Context, id uuid.UUID) (models.Plan, error)
 	Delete(ctx context.Context, id uuid.UUID) error
@@ -26,8 +25,8 @@ func PlanServiceBuilder(p PlanRepository) *Service {
 	}
 }
 
-func (p *Service) Query(ctx context.Context, limit int) ([]models.Plan, error) {
-	res, err := p.planRepo.Query(ctx, limit)
+func (p *Service) Query(ctx context.Context, limit int, userID uuid.UUID) ([]models.Plan, error) {
+	res, err := p.planRepo.Query(ctx, limit, userID)
 
 	if err != nil {
 		return nil, err
@@ -50,7 +49,6 @@ func (p *Service) Create(ctx context.Context, plan *models.Plan) error {
 	err := p.planRepo.Create(ctx, plan)
 
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 

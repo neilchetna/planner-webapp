@@ -41,7 +41,7 @@ func (m *TaskRepository) Update(ctx context.Context, task *models.Task) error {
 	if task.ID == uuid.Nil {
 		return errors.New("task's 'id' is not valid")
 	}
-	res := m.db.WithContext(ctx).Model(&models.Task{}).Where("id = ?", task.ID).Omit("ID").Updates(task)
+	res := m.db.WithContext(ctx).Model(&task).Select("Name", "Description", "Status").Updates(task)
 	if res.Error != nil {
 		return res.Error
 	}

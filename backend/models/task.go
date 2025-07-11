@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Status string
@@ -21,6 +22,15 @@ type Task struct {
 	StartedAt   sql.NullTime `json:"startedAt"`
 	DueDate     sql.NullTime `json:"dueDate"`
 	PlanId      uuid.UUID    `gorm:"type:uuid" json:"planId"`
+	UserId      uuid.UUID    `gorm:"type:uuid" json:"userId"`
+}
+
+func (t *Task) BeforeSave(tx *gorm.DB) (err error) {
+	if t.UserId == uuid.Nil {
+		return ErrUserIdNull
+	}
+
+	return
 }
 
 type UpdateTaskInput struct {

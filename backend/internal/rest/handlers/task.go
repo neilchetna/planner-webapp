@@ -46,7 +46,9 @@ func (a *TaskHandler) Create(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid plan id")
 	}
-	task := models.Task{PlanId: planId}
+
+	user := c.Get(utils.User).(*models.User)
+	task := models.Task{PlanId: planId, UserId: user.ID}
 
 	err = c.Bind(&task)
 

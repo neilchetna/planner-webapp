@@ -1,10 +1,11 @@
 import { Task } from "@/models";
-import http from "../api";
 import { TaskCreateDTO, TaskResponseDTO } from "./dto";
 import { AxiosResponse } from "axios";
 import { tasksToVM, tasksVM2UpdateDTO } from "./transformer";
+import { useApi } from "../api";
 
 export function apiFactory() {
+  const http = useApi();
   const transformTaskDTO2VM = (res: AxiosResponse<TaskResponseDTO>): Task => tasksToVM(res.data);
   return {
     async postTask(planId: string, taskDTO: TaskCreateDTO): Promise<Task> {

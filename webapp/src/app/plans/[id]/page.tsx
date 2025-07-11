@@ -11,6 +11,7 @@ import { use } from "react";
 import PlanMenuDropdown from "./(components)/plan-menu-dropdown";
 import PlanTitle from "./(components)/plan-title";
 import IconPicker from "./(components)/icon-picker";
+import { usePlanStore } from "@/lib/store";
 
 type Params = { id: string };
 
@@ -20,7 +21,8 @@ type PlansDetailPageProps = {
 
 function PlansDetailPage({ params }: PlansDetailPageProps) {
   const { id } = use<Params>(params);
-  const { plan, loading } = useFetchPlan({ id });
+  const plan = usePlanStore(s => s.plans.find(p => p.id === id));
+  const { loading } = useFetchPlan({ id });
   const { updatePlan, deletePlan } = usePlans();
   const {
     toggleSelectTask,
@@ -82,7 +84,7 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
       </Flex>
       {plan && (
         <Container p="3" size="3">
-          <Skeleton loading={loading}>
+          <Skeleton height="80" loading={loading}>
             <Heading className="flex items-center gap-6" as="h1">
               <IconPicker onIconSelect={handleUpdatePlanIcon} currentIcon={plan.icon || "📋"} />
               <PlanTitle plan={plan} onTitleSubmit={handleUpdatePlanTitle} />
@@ -100,22 +102,24 @@ function PlansDetailPage({ params }: PlansDetailPageProps) {
             <IconPlaylistAdd size={20} />
             Add Task
           </Button>
-          {loading && new Array(4).fill(null).map((_, i) => <Skeleton loading key={i} />)}
-          {plan?.tasks?.map(task => (
-            <Box
-              key={task.id}
-              onDoubleClick={() => setEditingTask(task)}
-              onClick={() => handleTaskClick(task)}
-            >
-              <TaskCard
-                onStatusChange={handleUpdateTaskStatus}
-                resetTaskStates={resetTasks}
-                deleteTask={deleteTask}
-                onTaskSubmit={handleOnSubmitTask}
-                task={task}
-              />
-            </Box>
-          ))}
+          {!plan.tasks &&
+            new Array(4).fill(null).map((_, i) => <Skeleton my="2" height="40" loading key={i} />)}
+          {Array.isArray(plan.tasks) &&
+            plan.tasks.map(task => (
+              <Box
+                key={task.id}
+                onDoubleClick={() => setEditingTask(task)}
+                onClick={() => handleTaskClick(task)}
+              >
+                <TaskCard
+                  onStatusChange={handleUpdateTaskStatus}
+                  resetTaskStates={resetTasks}
+                  deleteTask={deleteTask}
+                  onTaskSubmit={handleOnSubmitTask}
+                  task={task}
+                />
+              </Box>
+            ))}
         </Container>
       )}
     </>

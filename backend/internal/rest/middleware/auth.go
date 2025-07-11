@@ -1,30 +1,28 @@
 package middleware
 
 import (
-	"log"
-	"os"
+	"net/http"
+	"strings"
 
-	echojwt "github.com/labstack/echo-jwt/v4"
+	jwt "github.com/clerk/clerk-sdk-go/v2/jwt"
 	"github.com/labstack/echo/v4"
+	"github.com/neilchetna/planner-webapp/backend/internal/rest/utils"
 )
 
 func Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
-	config := jwtConfigFactory()
+	return func(c echo.Context) error {
+		sessionToken := strings.TrimPrefix(c.Request().Header.Get(echo.HeaderAuthorization), "Bearer ")
 
-	return echojwt.WithConfig(config)(next)
-}
+		ctx := c.Request().Context()
+		claims, err := jwt.Verify(ctx, &jwt.VerifyParams{
+			Token: sessionToken,
+		})
 
-func jwtConfigFactory() echojwt.Config {
+		if err != nil {
+			return echo.NewHTTPError(http.StatusUnauthorized, "Provide valid credentials")
+		}
 
-	publicKey, err := parseRASPublicKeyFromPEM([]byte(os.Getenv("CLERK_PEM")))
-
-	if err != nil {
-		log.Fatalf("Error parsing public key: %v", err)
-	}
-
-	return echojwt.Config{
-		SigningKey:    publicKey,
-		SigningMethod: "RS256",
-		TokenLookup:   "header:Authorization:Bearer ",
+		c.Set(utils.ClerkUserId, claims.Subject)
+		return next(c)
 	}
 }

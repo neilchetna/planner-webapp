@@ -6,6 +6,7 @@ import { IconCalendar, IconLayoutKanban, IconProps, IconTargetArrow } from "@tab
 import { redirect, usePathname } from "next/navigation";
 import React, { ReactElement } from "react";
 import SidebarMenuItem from "./sidebar-menu-item";
+import UserSection from "./user-section";
 
 export type NavigationItem = {
   name: string;
@@ -91,7 +92,7 @@ function Sidebar() {
   ];
 
   return (
-    <Box height="100vh" p="4" className="bg-slate-100">
+    <Box height="100vh" p="4" className="flex flex-col justify-between bg-slate-100">
       <nav>
         <ul>
           {items.map(({ actionText, listTitle, list, actionFn }) => (
@@ -127,6 +128,7 @@ function Sidebar() {
           ))}
         </ul>
       </nav>
+      <UserSection />
     </Box>
   );
 }
